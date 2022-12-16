@@ -7,7 +7,7 @@
             <!--begin::Page title-->
             <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                 <!--begin::Title-->
-                <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Staffs
+                <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Rating 
                     List</h1>
                 <!--end::Title-->
                 <!--begin::Breadcrumb-->
@@ -71,63 +71,50 @@
                         <!--end::Search-->
                     </div>
                     <!--begin::Card title-->
-<?php  if ($this->session->userdata('usertype')==1){?>
-					<!--begin::Card toolbar-->
-				   <div class="card-toolbar">
+                  <!--begin::Card toolbar-->
+											<div class="card-toolbar">
+												<!--begin::Toolbar-->
+												<div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
+													<!--begin::Add Task-->
 
-<!--begin::Toolbar-->
-<div class="d-flex justify-content-end" data-kt-user-table-toolbar="base">
-	<!--begin::Add Task-->
-	<a href="<?=base_url()?>admin/addstaff">
-		<button type="button" class="btn btn-primary">
-			<!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
-			<span class="svg-icon svg-icon-2">
-				<svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-					xmlns="http://www.w3.org/2000/svg">
-					<rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1"
-						transform="rotate(-90 11.364 20.364)" fill="currentColor" />
-					<rect x="4.36396" y="11.364" width="16" height="2" rx="1"
-						fill="currentColor" />
-				</svg>
-			</span>
-			<!--end::Svg Icon-->Add Staff
-		</button>
-	</a>
-	<!--end::Add Task-->
-</div>
-
-<!--end::Toolbar-->
-<!--begin::Modal - Adjust Balance-->
-
-<!--end::Modal - New Card-->
-<!--begin::Modal - Add task-->
-
-<!--end::Modal - Add task-->
-</div>
-<!--end::Card toolbar-->
-<?php }?>
+													<button type="button" class="btn btn-primary addratingpopup" data-item="<?=$uid;?>">
+													<!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
+													<span class="svg-icon svg-icon-2">
+														<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+															<rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="currentColor" />
+															<rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="currentColor" />
+														</svg>
+													</span>
+													<!--end::Svg Icon-->Add Rating</button>	
+												
+													<!--end::Add Task-->
+												</div>
+												<!--end::Toolbar-->
+												
+												<!--begin::Modal - Adjust Balance-->
+												 
+												<!--end::Modal - New Card-->
+												<!--begin::Modal - Add task-->
+												
+												<!--end::Modal - Add task-->
+											</div>
                 </div>
                 <!--end::Card header-->
                 <!--begin::Card body-->
-                <div class="card-body py-4">
+                
                     <!--begin::Table-->
                     <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_table_users">
                         <!--begin::Table head-->
                         <thead>
                             <!--begin::Table row-->
                             <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                <th class="w-10px pe-2">#</th>
-                                <th class="min-w-125px">Emp.Id</th>
-                                <th class="min-w-125px">Name</th>
-                                <!-- <th class="min-w-125px">Email</th> -->
-                                
-                                <th class="min-w-125px">Designation</th>
-								 <!--<th class="min-w-125px">Department</th>
-								<th class="min-w-125px">School</th> -->
-                                <th class="min-w-125px">Reporting</th>
-                                <th class="text-center min-w-100px">Actions</th>
+                                <th class="w-10px ">#</th>
+                                <th class="min-w-50px">Date</th>
+                                <th class="min-w-50px">Rating</th>
+                                <th class="min-w-50px">Comment</th>
+                              <!--  <th class="text-center min-w-100px">Actions</th>
                             </tr>
-                            <!--end::Table row-->
+                            end::Table row-->
                         </thead>
                         <!--end::Table head-->
                         <!--begin::Table body-->

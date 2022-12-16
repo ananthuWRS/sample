@@ -12,7 +12,7 @@
 
 					<?php $task_head = 'Edit Task'; ?>
 					<h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-						<?= (isset($taskDetails)) ? $task_head : 'Edit Task' ?></h1>
+						<?= (isset($taskDetails)) ? $task_head : 'Add Task' ?></h1>
 					<!--end::Title-->
 					<!--begin::Breadcrumb-->
 					<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
@@ -36,7 +36,7 @@
 						<!--end::Item-->
 						<!--begin::Item-->
 
-						<li class="breadcrumb-item text-muted">Edit Staff
+						<li class="breadcrumb-item text-muted">Add Staff
 						</li>
 						<!--end::Item-->
 					</ul>
@@ -74,7 +74,7 @@
 									<!--begin::Modal header-->
 									<div class="p-5 pb-0">
 										<!--begin::Modal title-->
-										<h2 class="fw-bold">Edit Staff
+										<h2 class="fw-bold">Add Staff
 										</h2>
 										<!--end::Modal title-->
 									</div>
@@ -82,9 +82,9 @@
 									<!--begin::Modal body-->
 									<div class="mx-5 mx-xl-5 my-7">
 										<!--begin::Form-->
-										<form class="form" id="addTaskForm" action="#" data-parsley-validate>
-											<input type="hidden" name="editid" value="<?= (isset($id)) ? $id : '' ?>">
-											<input type="hidden" name="editauth" value="<?= (isset($auth)) ? $auth : '' ?>">
+										<form class="form" id="addStaffForm" action="#" data-parsley-validate>
+											<input type="hidden" name="staffid" value="">
+											<input type="hidden" name="staffauth" value="">
 											<!--begin::Scroll-->
 											<div class="row d-flex   me-n7 pe-7">
 
@@ -94,7 +94,7 @@
 													<label class="required fw-semibold fs-6 mb-2">Title</label>
 													<!--end::Label-->
 													<!--begin::Input-->
-													<input type="text" name="staff_title" id="staff_title" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Title" value="<?= (isset($userdata)) ? $userdata->au_title : '' ?>" />
+													<input type="text" name="staff_title" id="staff_title" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Title" value="" />
 													<!--end::Input-->
 												</div>
 
@@ -104,7 +104,7 @@
 													<label class="required fw-semibold fs-6 mb-2">Name</label>
 													<!--end::Label-->
 													<!--begin::Input-->
-													<input type="text" name="staff_name" id="staff_name" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Name" value="<?= (isset($userdata)) ? $userdata->au_crickf : '' ?>" />
+													<input type="text" name="staff_name" id="staff_name" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Name" value="" />
 													<!--end::Input-->
 												</div>
 
@@ -115,7 +115,7 @@
 													<label class="required fw-semibold fs-6 mb-2">Email</label>
 													<!--end::Label-->
 													<!--begin::Input-->
-													<input type="email" data-parsley-type="email"name="staff_email" id="staff_email" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Email" value="<?= (isset($userdata)) ? $userdata->au_cricke : '' ?>" />
+													<input type="email"data-parsley-type="email"	 name="staff_email" id="staff_email" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Email" value="" />
 													<!--end::Input-->
 												</div>
 
@@ -127,7 +127,7 @@
 														Number</label>
 													<!--end::Label-->
 													<!--begin::Input-->
-													<input type="text" name="staff_empnumber" id="staff_empnumber" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Employee Number" value="<?= (isset($userdata)) ? $userdata->au_emp_number : '' ?>" />
+													<input type="text" name="staff_empnumber" id="staff_empnumber" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Employee Number" value="" />
 													<!--end::Input-->
 												</div>
 
@@ -222,7 +222,7 @@
 															foreach ($usertype as $key => $cat) {
 
 														?>
-																<option value="<?= strtolower($cat->usertypeid) ?>" <?= (isset($userdata) &&  $userdata->au_usertype == $cat->usertypeid) ? 'selected' : '' ?>>
+																<option value="<?= strtolower($cat->usertypeid) ?>">
 																	<?= ucfirst($cat->ut_name) ?>
 
 																</option>
@@ -236,16 +236,17 @@
 													<div id="userType-errors"></div>
 												</div>
 												<!--end::Input group-->
-
 												<!--begin::Input group-->
 												<div class="fv-row mb-7 col-md-6">
 													<!--begin::Label-->
 													<label class="required fw-semibold fs-6 mb-2">Campus</label>
 													<!--end::Label-->
 													<!--begin::Input-->
-													<input type="text" name="staff_campus" id="staff_campus" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Campus" readonly value="<?= (isset($userdata)) ? $userdata->au_campus : '' ?>" />
+													<input type="text" name="staff_campus" id="staff_campus" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Campus" value="Amritapuri" readonly />
+
 													<!--end::Input-->
 												</div>
+
 												<!--begin::Input group-->
 												<div class="fv-row mb-7 col-md-6">
 													<!--begin::Label-->
@@ -260,7 +261,7 @@
 															foreach ($designation as $key => $cat) {
 
 														?>
-																<option value="<?= strtolower($cat->designation_id) ?>" <?= (isset($userdata) &&  $userdata->au_designation == strtolower($cat->designation_id)) ? 'selected' : '' ?>>
+																<option value="<?= strtolower($cat->designation_id) ?>">
 																	<?= ucfirst($cat->designation_name) ?>
 
 																</option>
@@ -274,40 +275,30 @@
 													<div id="designation-errors"></div>
 													<!--end::Input-->
 												</div>
+												<!--begin::Input group-->
+												<div class="fv-row mb-7 col-md-6">
+													<!--begin::Label-->
+													<label class="required fw-semibold fs-6 mb-2">Password</label>
+													<!--end::Label-->
+													<!--begin::Input-->
 
-												<div class="fv-row mb-7 col-md-6 d-flex align-items-center">
-													<div class="changepword form-check form-switch">
-														<input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" value="true" >
-														<label class="form-check-label" for="flexSwitchCheckChecked">Change Password</label>
-													</div>
+													<input data-parsley-errors-container="#password-errors" type="password" name="staff_pass" id="staff_pass" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Password" value="" />
+													<div id="password-errors"></div>
+													<!--end::Input-->
 												</div>
 
-												<div class="fv-row mb-7  row pad-right">
+												<!--begin::Input group-->
+												<div class="fv-row mb-7 col-md-6">
+													<!--begin::Label-->
+													<label class="required fw-semibold fs-6 mb-2">Confirm Password</label>
+													<!--end::Label-->
+													<!--begin::Input-->
 
-													<!--begin::Input group-->
-													<div class="fv-row mb-7 col-md-6 passwordfields ">
-
-														<!--begin::Label-->
-														<label class="required fw-semibold fs-6 mb-2">Password</label>
-														<!--end::Label-->
-														<!--begin::Input-->
-
-														<input data-parsley-errors-container="#password-errors" type="password" name="staff_pass" id="staff_pass" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Password" value="" />
-														<div id="password-errors"></div>
-														<!--end::Input-->
-													</div>
-													<!--begin::Input group-->
-													<div class="fv-row mb-7 col-md-6 passwordfields pad-right">
-														<!--begin::Label-->
-														<label class="required fw-semibold fs-6 mb-2">Confirm Password</label>
-														<!--end::Label-->
-														<!--begin::Input-->
-
-														<input data-parsley-errors-container="#confirmpassword-errors" type="password" name="staff_confirmpass" id="staff_confirmpass" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Password" value="" data-parsley-equalto="#staff_pass" />
-														<div id="confirmpassword-errors"></div>
-														<!--end::Input-->
-													</div>
+													<input data-parsley-errors-container="#confirmpassword-errors" type="password" name="staff_confirmpass" id="staff_confirmpass" required class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Password" value="" data-parsley-equalto="#staff_pass" />
+													<div id="confirmpassword-errors"></div>
+													<!--end::Input-->
 												</div>
+
 												<!--begin::Input group-->
 												<div class="fv-row mb-7 col-md-6">
 													<!--begin::Label-->
@@ -322,7 +313,7 @@
 															foreach ($location as $key => $cat) {
 
 														?>
-																<option value="<?= strtolower($cat->location_id) ?>" <?= (isset($stafflocation[0]) &&  $stafflocation[0]->sl_location_type == strtolower($cat->location_id)) ? 'selected' : '' ?>>
+																<option value="<?= strtolower($cat->location_id) ?>">
 																	<?= ucfirst($cat->lo_name) ?>
 
 																</option>
@@ -343,22 +334,22 @@
                                                     <!--begin::Input-->
                                                     <input type="text" required name="work_date" id="work_date"
                                                         class="form-control form-control-solid mb-3 mb-lg-0"
-                                                        placeholder="Work Start Date" value="<?= (isset($stafflocation[0])) ? date('d-m-Y', strtotime($stafflocation[0]->sl_start_date)) : '' ?>" />
+                                                        placeholder="Work Start Date" value="" />
                                                     <!--end::Input-->
                                                 </div>
 												 <!--begin::Input group-->
 
 												 <div class="fv-row mb-7  col-md-6">
                                                     <!--begin::Label-->
-                                                    <label class="required fw-semibold fs-6 mb-2">Work End Date</label>
+                                                    <label class=" fw-semibold fs-6 mb-2">Work End Date</label>
                                                     <!--end::Label-->
                                                     <!--begin::Input-->
                                                     <input type="text" required name="work_end_date" id="work_end_date"
                                                         class="form-control form-control-solid mb-3 mb-lg-0"
-                                                        placeholder="Work End Date" value="<?= (isset($stafflocation[0])) ? date('d-m-Y', strtotime($stafflocation[0]->sl_end_date)) : '' ?>" />
+                                                        placeholder="Work End Date" value="" />
                                                     <!--end::Input-->
                                                 </div>
-												
+
 											</div>
 											<!--end::Scroll-->
 											<!--begin::Actions-->
@@ -374,7 +365,7 @@
 												<div class="text-right pt-15">
 
 													<button type="reset" class="btn btn-light me-3" data-kt-users-modal-action="cancel">Reset</button>
-													<button type="button" class="btn btn-primary" id="submitTask" data-kt-users-modal-action="submit">
+													<button type="button" class="btn btn-primary" id="submitStaff" data-kt-users-modal-action="submit">
 														<span class="indicator-label">Submit</span>
 														<span class="indicator-progress">Please wait...
 															<span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>

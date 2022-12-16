@@ -1144,8 +1144,296 @@ if ($taskStatusDetails) {
         </div>
     </div>
 </div>
+<?php
+break;
+case 'editstaffrating':
+?>
+<!--begin::Modal - Edit task-->
+<div class="modal fade commonmodal" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-lg modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Modal header-->
+            <div class="modal-header" id="kt_modal_add_user_header">
+                <!--begin::Modal title-->
+                <h2 class="fw-bold">Edit Rating</h2>
+                <!--end::Modal title-->
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                    aria-label="Close">
+                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                    <span class="svg-icon svg-icon-1">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                                transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                fill="currentColor" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                </div>
+                <!--end::Close-->
+            </div>
+            <!--end::Modal header-->
+            <!--begin::Modal body-->
+            <div class="modal-body scroll-y mx-5 mx-xl-2 my-7">
+                <!--begin::Form-->
+                <div class="modal-body scroll-y mx-5 mx-xl-2 my-7">
+                <!--begin::Form-->
+                <form id="kt_modal_add_category_form" class="form" action="#" data-parsley-validate>
+
+                    <!--begin::Scroll-->
+                    <div class="d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll"
+                        data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
+                        data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                        data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+                        <input type="hidden" name="editid" id="editid"
+                            value="<?= (isset($editdata->staff_id )) ? $editdata->staff_id  : '' ?>">
+                            <input type="hidden" name="rating_id" id="rating_id"
+                            value="<?= (isset($editdata->rating_id )) ? $editdata->rating_id  : '' ?>">
+                        <!--begin::Input group-->
+<div class="row">
+ <div class="fv-row mb-7  col-md-6">
+                                                    <!--begin::Label-->
+                                                    <label class="required fw-semibold fs-6 mb-2"> Date</label>
+                                                    <!--end::Label-->
+                                                    <!--begin::Input-->
+                                                    <input type="text" required name="rate_date" id="rating_date"
+                                                        class="form-control form-control-solid mb-1 mb-lg-0"
+                                                        placeholder=" Date" value="<?=date('d-m-Y', strtotime($editdata->rating_date)); ?>" />
+                                                    <!--end::Input-->
+                                                </div>
+
+                        <div class="fv-row mb-7  col-md-6">
+                            <!--begin::Label-->
+                            <label class="fs-6 fw-semibold form-label mb-2 required">Rating</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select required data-dropdown-parent="#commonmodal" id="category" name="editrating_id"
+                                data-control="select2" data-placeholder="Select a category" data-hide-search="false"
+                                class="form-select form-select-solid fw-bold">
+                                <option></option>
+                                <?php
+                               
+                                foreach ($allratingoptions as $options) {
+    
+                                    ?>
+                                <option  value="<?=$options->rating_option_id?>" <?=($editdata ->rating==$options->rating_option_id)?'selected':''?>><?=$options->rating_option_title?></option>
+                                <?php } ?>
+
+                            </select>
+                            <!--end::Input-->
+                        </div>
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7 col-md-12">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 ">Comment</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <textarea  required name="comment" id="sub_category_name"
+                                class="form-control form-control-solid  mb- mb-lg-0" rows="5" cols="70" placeholder="Edit Comment"><?= (isset($editdata)) ? $editdata->comment : '' ?></textarea>
+                            <!--end::Input-->
+                        </div>
+                        <!--end::Input group-->
+
+                    </div>
+                    <!--end::Scroll-->
+                    <!--begin::Actions-->
+                    <div class="text-right pt-15">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="rating_edit">
+                            <span class="indicator-label" >Submit</span>
+                            <span class="indicator-progress">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </button>
+                    </div>
+                    <!--end::Actions-->
+                </form>
+                <!--end::Form-->
+            </div>
+
+                <!--begin::Scroll-->
+                <div class="row view_task d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll"
+                    data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
+                    data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                    data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+
+                    <!--begin::Input group-->
+
+                    
+                    <!--end::Input group-->
+
+
+
+
+                </div>
+                <!--end::Scroll-->
+                <!--begin::Actions
+                <div class="text-right pt-15">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+
+                </div>-->
+                <!--end::Actions-->
+
+                <!--end::Form-->
+            </div>
+            <!--end::Modal body-->
+        </div>
+        <!--end::Modal content-->
+    </div>
+    <!--end::Modal dialog-->
+</div>
+<!--end::Modal - Add task-->
 
 <?php
 break;
-}
+
+case 'viewratingstaff':
 ?>
+<!--begin::Modal - Add task-->
+<div class="modal fade commonmodal" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-lg modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Modal header-->
+            <div class="modal-header" id="kt_modal_add_user_header">
+                <!--begin::Modal title-->
+                <h2 class="fw-bold">Add Rating</h2>
+                <!--end::Modal title-->
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                    aria-label="Close">
+                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                    <span class="svg-icon svg-icon-1">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                                transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                fill="currentColor" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                </div>
+                <!--end::Close-->
+            </div>
+            <!--end::Modal header-->
+            <!--begin::Modal body-->
+            <div class="modal-body scroll-y mx-5 mx-xl-2 my-7">
+                <!--begin::Form-->
+                <div class="modal-body scroll-y mx-5 mx-xl-2 my-7">
+                <!--begin::Form-->
+                <form id="kt_modal_add_category_form" class="form" action="#" data-parsley-validate>
+
+                    <!--begin::Scroll-->
+                    <div class="d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll"
+                        data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
+                        data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                        data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+                        <input type="hidden" name="editid" id="editid"
+                            value="<?= (isset($staffid)) ? $staffid : '' ?>">
+                        <!--begin::Input group-->
+                        <div class="row">
+                       <div class="fv-row mb-7  col-md-6">
+                                                    <!--begin::Label-->
+                                                    <label class="required fw-semibold fs-6 mb-2"> Date</label>
+                                                    <!--end::Label-->
+                                                    <!--begin::Input-->
+                                                    <input type="text" required name="rate_date" id="rating_date"
+                                                        class="form-control form-control-solid mb-3 mb-lg-0"
+                                                        placeholder=" Date" value="" />
+                                                    <!--end::Input-->
+                                                </div>
+
+
+                                                
+                        <div class="fv-row mb-7  col-md-6">
+                            <!--begin::Label-->
+                            <label class="fs-6 fw-semibold form-label mb-2 required">Rating</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <select required data-dropdown-parent="#commonmodal" id="category" name="rating_id"
+                                data-control="select2" data-placeholder="Select a category" data-hide-search="false"
+                                class="form-select form-select-solid fw-bold">
+                                <option></option>
+                                <?php
+                                foreach ($allratingoptions as $options) {
+    
+                                    ?>
+                                <option  value="<?=$options->rating_option_id?>"><?=$options->rating_option_title?></option>
+                                <?php } ?>
+
+                            </select>
+                            <!--end::Input-->
+                        </div>
+                        </div>
+                        <!--end::Input group-->
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7 col-md-12">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Comment</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                             <textarea  required name="comment" id="sub_category_name" class="form-control form-control-solid  mb- mb-lg-0" rows="5" cols="70" placeholder="Add Comment"
+                                value="<?= (isset($editdata)) ? $editdata->sc_name : '' ?>"></textarea>
+                            <!--end::Input-->
+                        </div>
+                  <!--end::Input group-->
+
+                    </div>
+                                </div>
+                    <!--end::Scroll-->
+                    <!--begin::Actions-->
+                    <div class="text-right pt-15">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="rating_submit">
+                            <span class="indicator-label" >Submit</span>
+                            <span class="indicator-progress">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </button>
+                    </div>
+                       
+                    </div>
+                    
+                    <!--end::Actions-->
+                    </div>
+                </form>
+                <!--end::Form-->
+            </div>
+
+                <!--begin::Scroll-->
+                <div class="row view_task d-flex flex-column scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll"
+                    data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
+                    data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                    data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+
+                    <!--begin::Input group-->
+
+                    
+                    <!--end::Input group-->
+
+
+
+
+                </div>
+                <!--end::Scroll-->
+                <!--begin::Actions
+                <div class="text-right pt-15">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+
+                </div>-->
+                <!--end::Actions-->
+
+                <!--end::Form-->
+            </div>
+            <!--end::Modal body-->
+        </div>
+        <!--end::Modal content-->
+    </div>
+    <!--end::Modal dialog-->
+</div>
+<!--end::Modal - Add task-->
+<?php break; } ?>

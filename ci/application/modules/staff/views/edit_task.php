@@ -478,7 +478,8 @@ if ($taskStatusDetails) {
                                                             <td><?=(($details->td_hours!='')?$details->td_hours:'0').' Hrs|'.(($details->td_minutes!='')?$details->td_minutes:'0').' Minutes'?></td>
                                                             <td><?=$details->td_remarks?></td>
                                                             <td>
-                                                                <?php if($details->td_approved!='1'){?>
+                                                                <?php if(isset($details->td_approved)&& $details->td_approved!='1'){?>
+
                                                                 <a href="javascript:;"
                                                                     data-item="<?=$details->task_details_id?>"
                                                                     class="btn btn-light-primary  btn-sm editTaskStatusDetails"><i

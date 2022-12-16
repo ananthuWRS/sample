@@ -1911,4 +1911,226 @@ class Staff extends MY_Controller
         $this->load->model('staff/Tasks', 'task');
         return $this->task->getstaffalltasksonadate($staff,$date);
      }
+     public function stafflist(){
+        $this->data['vendorcss']        = array('custom/datatables/datatables.bundle.css');
+       $this->data['vendorjs']        = array('custom/datatables/datatables.bundle.js','custom/parsleyjs/parsley.min.js');
+       $this->data['commonjs']        = array('custom/scripts/customscriptfiles.js');
+      $this->data['scriptfunctions'] = array('staff_userlist();');
+       $this->data['title']           = "Staff List";
+
+       $this->load->template('user_list', $this->data, false);
+       }
+       
+   public function ajaxstaff_userlist()
+   {
+       $this->load->model('staff/Staff_reporting_conn', 'reporting');
+       $this->load->model('staff/Tasks', 'task');
+      
+       $list = $this->usersigin-> get_datatablesstaff_reportingperson();
+       $tabledata = array();
+       $no = $this->input->post('start', true);
+       $vt = 1;
+       foreach ($list as $item) {
+           $authid = $this->checksumgen($item->authenticationid);
+           $checkReporting=$this->reporting->get_by(array('rp_staffid'=>$item->authenticationid,'rp_status'=>'0'));
+          
+           //$rate=$this->task->show_staffrating($item->authenticationid);//currenty geting stati user
+          
+           $rateComment= $item->rating_option_title;
+           $no++;
+           $row = array();
+           $row[] = $no;
+           $row[] = ucfirst(strtolower($item->au_emp_number));
+           $row[] = ucfirst(strtolower($item->au_title.' '.$item->au_crickf));
+           $row[] = ucfirst(strtolower($item->au_designation));
+           $row[] = ucfirst(strtolower($item->rating_option_title));
+
+          // $row[] = ($checkReporting) ? '<a href="javascript:;" data-item="' . $item->authenticationid . '" class="btn btn-edit viewReportingPerson btn-sm " "><i class="fa fa-eye"></i> Give Rating</a>' : '';
+          //$row[] = '<a href="'.base_url().'staff/rating_staff/' . $item->authenticationid . '" class="btn btn-edit viewReportingPerson btn-sm " "><i class="fa fa-star-o"></i> '.$rateComment.'</a>';
+           $row[] = '<a href="javascript:;" data-item="' . $item->authenticationid . '" class="btn btn-edit assignReportingPerson btn-sm " "></a>
+           &nbsp;<a href="'.base_url().'admin/editstaff/'.$item->authenticationid.'/'.$authid.'"  class="btn btn-edit  btn-sm mt-2 " "></a>
+           &nbsp;<a href="'.base_url().'admin/viewstaff/'.$item->authenticationid.'/'.$authid.'"  class="btn btn-view  btn-sm mt-2 " "><i class="fa fa-eye"></i> View</a>';
+
+           $tabledata[] = $row;
+           $vt++;
+           /* ================================ */
+       }
+
+       $output = array(
+           "draw" => $this->input->post('draw', true),
+           "recordsTotal" => $this->usersigin->count_allstaff(),
+           "recordsFiltered" => $this->usersigin->count_filteredstaff(),
+           "data" => $tabledata,
+       );
+
+       echo json_encode($output);
+   }
+   public function rating_staff($id)
+   {
+      $this->data['vendorcss']        = array('custom/datatables/datatables.bundle.css');
+       $this->data['vendorjs']        = array('custom/datatables/datatables.bundle.js','custom/parsleyjs/parsley.min.js');
+       $this->data['commonjs']        = array('custom/scripts/customscriptfiles.js');
+       $this->data['scriptfunctions'] = array('task_rating('.$id.');');
+       $this->data['title']           = "Rating";
+       $this->data['uid'] = $id;
+       $this->load->template('rating', $this->data, false);
+
+
+
+   }
+   public function ajax_get_staffrate()
+   {
+
+       $id = $this->input->post('id', true);
+       $this->load->model('staff/Tasks', 'task');
+       $list = $this->task->getstaffrating();
+       $tabledata = array();
+       $no = $this->input->post('start', true);
+       $vt = 1;
+       foreach ($list as $item) {
+           $no++;
+           $row = array();
+           // $row[] = $no;
+           // $row[] = ucfirst(strtolower($item->rating_date));
+           // //$row[] = ucfirst(strtolower($item->rating_option_title));
+           // $row[] = ucfirst(strtolower($item->comment));
+
+          $row[] = '<div class="d-flex flex-stack position-relative mt-6">
+           <!--begin::Bar-->
+           <div class="position-absolute h-100 w-4px bg-secondary rounded top-0 start-0">
+           </div>
+           <!--end::Bar-->
+           <!--begin::Info-->
+           <div class="fw-semibold ms-5">'.date('d-m-Y', strtotime($item->rating_date)).'
+               <!--begin::Time-->
+               <div class="fs-7 mb-1">'.ucfirst(strtolower($item->rating_option_title)).'
+                   <span class="fs-7 text-muted text-uppercase"></span>
+               </div>
+               <!--end::Time-->
+               <!--begin::Title-->
+               <a href="#" class="fs-5 fw-bold text-dark text-hover-primary mb-2">
+                   </a>
+               <!--end::Title-->
+               <!--begin::User-->
+               <div class="fs-7 text-muted">'.$item->comment.'
+                   <a href="#"></a>
+               </div>
+               <!--end::User-->
+           </div>
+           <!--end::Info-->
+           <!--begin::Action-->
+
+           <a href="javascript:;"
+               class="rate_edit btn btn-light bnt-active-light-primary btn-sm" data-item='.$item->rating_id.'>Edit</a>
+           <!--end::Action-->
+       </div>';
+           
+           $tabledata[] = $row;
+           $vt++;
+           /* ================================ */
+       }
+
+       $output = array(
+           "draw" => $this->input->post('draw', true),
+           "recordsTotal" => $this->task->count_all_staff_rating(),
+           "recordsFiltered" => $this->task->count_filteredstaff_rate(),
+           "data" => $tabledata,
+       );
+
+       echo json_encode($output);
+           
+       }
+       public function viewRatingPerson()
+  {
+      $this->load->model('staff/Tasks', 'task');
+      $editid = $this->input->post('editid', true);
+      $this->data['allratingoptions'] = $this->task->getallratingoptions();
+      $category = $this->input->post('pagename');
+      $this->data['staffid'] = $editid;
+      if ($category) {
+          $this->data['staffid'] = $editid;
+          $this->data['modalname'] = $category;
+          echo $this->load->view('commonmodal', $this->data, true);
+      }
+  }
+  public function rating_submit()
+  {
+   $rating_id=$this->input->post('rating_id', true);
+   $staff_id=$this->input->post('editid', true);
+   $reporting_staff_id=$this->session->userdata('authenticationid');
+   $date =$this->input->post('rate_date', true);
+   $comment=$this->input->post('comment', true);
+
+$rating_submit=array(
+   'rating'  => $rating_id,
+   'staff_id' =>$staff_id,
+   'reporting_staff_id'=>$reporting_staff_id,
+   'rating_date'=>date('Y-m-d', strtotime($date)),
+   'comment'=>$comment,
+);
+
+//echo json_encode ($rating_submit);  exit();
+$this->load->model('staff/Tasks', 'task');
+$ratesubmit=$this->task->get_rating_sumbit($rating_submit);
+if ($ratesubmit) {
+   $this->session->set_flashdata('successmessage', 'Rating Added successfully.');
+   $result = array('status' => 'Yes', 'Message' => 'Changed Added successfully');
+} else {
+   $this->session->set_flashdata('errormessage', 'Changes not found.');
+   $result = array('status' => 'No', 'Message' => 'Changes not found.');
 }
+echo json_encode($result);
+
+   }
+   public function rating_edit()
+   {
+    $this->load->model('staff/Tasks', 'task');
+    $editid = $this->input->post('editid', true);
+    $this->data['editdata'] = $this->task->get_ratebyid($editid);
+    $this->data['allratingoptions'] = $this->task->getallratingoptions();
+    $category = $this->input->post('pagename');
+    if ($category) {
+        $this->data['modalname'] = $category;
+        echo $this->load->view('commonmodal', $this->data, true);
+    }
+   }
+   public function ratingedit_submit()
+   {
+    $rating=$this->input->post('editrating_id', true);//rating type
+    $rating_id=$this->input->post('rating_id', true);//rating
+
+    
+    $staff_id=$this->input->post('editid', true);
+    $reporting_staff_id=$this->session->userdata('authenticationid');
+    $date_rate =$this->input->post('rate_date', true);
+    //print_r($date_rate);
+    $comment=$this->input->post('comment', true);
+
+$rating_submit=array(
+    'rating'  => $rating,
+   // 'rating_id' =>$rating_id,
+    //'staff_id' =>$staff_id,
+   // 'reporting_staff_id'=>$reporting_staff_id,
+    'rating_date'=>date('Y-m-d', strtotime($date_rate)),
+    'comment'=>$comment,
+);
+
+//echo json_encode ($rating_submit);  exit();
+$this->load->model('staff/Rating', 'rating');
+$ratesubmit=$this->rating->update_status_by(['rating_id'=>$rating_id],$rating_submit);
+if ($ratesubmit) {
+    $this->session->set_flashdata('successmessage', 'Rating changed successfully.');
+    $result = array('status' => 'Yes', 'Message' => 'Changed Added successfully');
+} else {
+    $this->session->set_flashdata('errormessage', 'Changes not found.');
+    $result = array('status' => 'No', 'Message' => 'Changes not found.');
+}
+echo json_encode($result);
+
+   }
+   }
+
+  
+
+
+ 

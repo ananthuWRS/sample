@@ -418,6 +418,157 @@ function taskCampus() {
 	});
 }
 
+
+
+function staff_userlist() {
+	var save_method;
+	var table;
+	table = $("#kt_table_users").DataTable({
+		destroy: true,
+		processing: true,
+		serverSide: true,
+		order: [],
+		ajax: {
+			url: base_url + "staff/ajaxstaff_userlist",
+			type: "POST",
+			data: function (data) {
+				data.search.value = $(".search-in-table").val();
+			},
+		},
+		language: {
+			emptyTable: "No staff available....!",
+			processing: "Loading staff ",
+		},
+		columnDefs: [
+			{
+				targets: "no-sort",
+				orderable: false,
+			},
+		],
+	});
+
+	$(document).on("click", "#btn-filter", function (event) {
+		table.ajax.reload();
+	});
+	$(document).on("keyup", ".search-in-table", function (event) {
+		table.ajax.reload();
+	});
+
+	$(document).on("click", "#btn-reset", function (event) {
+		$("#form-filter")[0].reset();
+		table.ajax.reload();
+	});
+	$(document).on("click", "#btn-cancel", function (event) {
+		$("#form-filter")[0].reset();
+		table.ajax.reload();
+	});
+
+	$(document).on("click", ".assignReportingPerson", function () {
+		$editid = $(this).data("item");
+		$.ajax({
+			dataType: "html",
+			type: "POST",
+			url: base_url + "admin/assignReportingPerson",
+			data: {
+				pagename: "assignReportingPerson",
+				editid: $editid,
+			},
+			success: function (data) {
+				$(".commonmodal").remove();
+				$(document.body).append(data);
+				$("#kt_modal_add_category_form").parsley();
+				$(".form-select").select2();
+				$(".commonmodal").modal("show");
+			},
+		});
+	});
+
+	$(document).on("click", ".viewReportingPerson", function () {
+		$editid = $(this).data("item");
+		$.ajax({
+			dataType: "html",
+			type: "POST",
+			url: base_url + "admin/viewReportingPerson",
+			data: {
+				pagename: "viewReportingPerson",
+				editid: $editid,
+			},
+			success: function (data) {
+				$(".commonmodal").remove();
+				$(document.body).append(data);
+				$("#kt_modal_add_category_form").parsley();
+				$(".form-select").select2();
+				$(".commonmodal").modal("show");
+			},
+		});
+	});
+
+
+
+	$(document).on("click", "#kt_add_category_submit", function () {
+		$("#kt_add_category_submit").attr("data-kt-indicator", "on");
+		$("#kt_add_category_submit").attr("disabled", true);
+		$("#kt_modal_add_category_form").parsley().validate();
+		if ($("#kt_modal_add_category_form").parsley().isValid()) {
+			$.ajax({
+				type: "POST",
+				enctype: "multipart/form-data",
+				url: base_url + "admin/reportingPersonSubmitProcess",
+				data: $("#kt_modal_add_category_form").serialize(),
+				cache: false,
+				timeout: 600000,
+				success: function (data) {
+					var e = JSON.parse(data);
+					if (e.status == "Yes") {
+						window.location.reload();
+					} else {
+						$("#kt_add_category_submit").removeAttr("data-kt-indicator");
+						$("#kt_add_category_submit").attr("disabled", false);
+						swal.fire("Sorry", e.Message, "error");
+					}
+				},
+			});
+		} else {
+			$("#kt_add_category_submit").removeAttr("data-kt-indicator");
+			$("#kt_add_category_submit").attr("disabled", false);
+		}
+	});
+
+	$(document).on("click", ".deleteReportingPerson", function () {
+		var itemid = $(this).data("itemid");
+
+		swal
+			.fire({
+				title: "Are you sure?",
+				text: "you wish to change this item status?",
+				icon: "info",
+				buttonsStyling: false,
+				showCancelButton: true,
+				confirmButtonText: "Ok",
+				cancelButtonText: "No, cancel it",
+				customClass: {
+					confirmButton: "btn btn-primary",
+					cancelButton: "btn btn-danger",
+				},
+			})
+			.then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: base_url + "admin/deleteReportingPerson/" + itemid,
+						type: "POST",
+						dataType: "text",
+						success: function (retObj) {
+							window.location.reload();
+						},
+					});
+				}
+			});
+	});
+}
+
+
+	
+
 function taskProgram() {
 	var save_method;
 	var table;
@@ -1356,7 +1507,7 @@ function staffaddtask() {
 		});
 	});
 
-	
+
 
 	$("#task_execution_date").flatpickr({
 		// minDate: "today",
@@ -1372,52 +1523,52 @@ function staffaddtask() {
 	});
 
 	$(".addTaskExecutionDetails").hide();
-	
-	
+
+
 
 	$("#kt_table_task_details").DataTable();
 
-	$(document).on("click", ".addTaskStatus", function () {	
-		var lastArray= addStatusArray[addStatusArray.length - 1];
-		var startcount =1;
-		
-		if(addStatusArray.length>0){
-			
-			startcount=lastArray['status'];
+	$(document).on("click", ".addTaskStatus", function () {
+		var lastArray = addStatusArray[addStatusArray.length - 1];
+		var startcount = 1;
+
+		if (addStatusArray.length > 0) {
+
+			startcount = lastArray['status'];
 		}
 		$.ajax({
 			dataType: "html",
 			type: "POST",
 			url: base_url + "staff/addTaskStatus",
 			data: {
-				pagename: "addTaskStatus",	
-				startcount:startcount			
+				pagename: "addTaskStatus",
+				startcount: startcount
 			},
 			success: function (data) {
 				$(".commonmodal").remove();
 				$(document.body).append(data);
-				$("#kt_modal_add_task_form").parsley();				
+				$("#kt_modal_add_task_form").parsley();
 				$(".commonmodal").modal("show");
-				$("#task_execution_date").flatpickr({					
+				$("#task_execution_date").flatpickr({
 					dateFormat: "d-m-Y",
 				});
 			},
 		});
 	});
-	
+
 	$(document).on("click", "#kt_add_task_submit", function () {
 		$("#kt_add_task_submit").attr("data-kt-indicator", "on");
 		$("#kt_add_task_submit").attr("disabled", true);
 		$("#kt_modal_add_task_form").parsley().validate();
-		
-			
-			  
-			 if ($("#kt_modal_add_task_form").parsley().isValid() ) {
 
 
-				
-			 //console.log
-			 var statusItem = {};
+
+		if ($("#kt_modal_add_task_form").parsley().isValid()) {
+
+
+
+			//console.log
+			var statusItem = {};
 			statusItem["status"] = $("#task_completion_status").val();
 			statusItem["date"] = $("#task_execution_date").val();
 			statusItem["hours"] = $("#task_time_spend_hours").val();
@@ -1429,13 +1580,13 @@ function staffaddtask() {
 				type: "POST",
 				enctype: "multipart/form-data",
 				url: base_url + "staff/addTaskStatusDetails",
-				data: {items:addStatusArray},
+				data: { items: addStatusArray },
 				cache: false,
 				timeout: 600000,
 				success: function (data) {
-					
+
 					if (data) {
-						
+
 						$(".statusDisplay").html(data);
 						$(".commonmodal").modal("hide");
 						$(".commonmodal").remove();
@@ -1454,7 +1605,7 @@ function staffaddtask() {
 
 	$(document).on("click", ".editAddTaskStatusDetails", function () {
 		var editid = $(this).data("item");
-		var editaddStatusArray = addStatusArray.filter(function(value, index){ 
+		var editaddStatusArray = addStatusArray.filter(function (value, index) {
 			return editid === index;
 		});
 		$.ajax({
@@ -1464,14 +1615,14 @@ function staffaddtask() {
 			data: {
 				pagename: "editAddTaskStatusDetails",
 				editid: editid,
-				editdata:editaddStatusArray
+				editdata: editaddStatusArray
 			},
 			success: function (data) {
 				$(".commonmodal").remove();
 				$(document.body).append(data);
-				$("#kt_modal_add_task_form").parsley();				
+				$("#kt_modal_add_task_form").parsley();
 				$(".commonmodal").modal("show");
-				$("#task_execution_date").flatpickr({					
+				$("#task_execution_date").flatpickr({
 					dateFormat: "d-m-Y",
 				});
 			},
@@ -1484,7 +1635,7 @@ function staffaddtask() {
 		$("#kt_modal_add_task_form").parsley().validate();
 		if ($("#kt_modal_add_task_form").parsley().isValid()) {
 
-			var editid=$(this).data('editid');
+			var editid = $(this).data('editid');
 
 
 			var statusItem = {};
@@ -1493,16 +1644,16 @@ function staffaddtask() {
 			statusItem["hours"] = $("#task_time_spend_hours").val();
 			statusItem["minutes"] = $("#task_time_spend_mins").val();
 			statusItem["remarks"] = $("#task_remarks").val();
-			addStatusArray[editid]=statusItem;
+			addStatusArray[editid] = statusItem;
 
 			$.ajax({
 				type: "POST",
 				enctype: "multipart/form-data",
 				url: base_url + "staff/addTaskStatusDetails",
-				data: {items:addStatusArray},
+				data: { items: addStatusArray },
 				cache: false,
 				timeout: 600000,
-				success: function (data) {					
+				success: function (data) {
 					if (data) {
 						$(".statusDisplay").html(data);
 						$(".commonmodal").modal("hide");
@@ -1521,85 +1672,85 @@ function staffaddtask() {
 	});
 	$(document).on("click", ".deleteAddTaskStatusDetails", function () {
 		var editid = $(this).data("item");
-		 addStatusArray = addStatusArray.filter(function(value, index){ 
+		addStatusArray = addStatusArray.filter(function (value, index) {
 			return editid != index;
 		});
 
-		
+
 		$.ajax({
 			type: "POST",
 			enctype: "multipart/form-data",
 			url: base_url + "staff/addTaskStatusDetails",
-			data: {items:addStatusArray},
+			data: { items: addStatusArray },
 			cache: false,
 			timeout: 600000,
-			success: function (data) {	
-					$(".statusDisplay").html(data);
-					$(".commonmodal").modal("hide");
-					$(".commonmodal").remove();				
+			success: function (data) {
+				$(".statusDisplay").html(data);
+				$(".commonmodal").modal("hide");
+				$(".commonmodal").remove();
 			},
 		});
 	});
 
 	$(document).on("change", "#task_completion_status", function () {
 		var status = $(this).val();
-        
-		var arrayStatusValueCheck = addStatusArray.filter(function(value, index){ 
-			return parseInt(value['status']) >= parseInt(status) ;
+
+		var arrayStatusValueCheck = addStatusArray.filter(function (value, index) {
+			return parseInt(value['status']) >= parseInt(status);
 		});
 
-		var lastArray= addStatusArray[addStatusArray.length - 1];		
-		 if(typeof lastArray !='undefined' &&  lastArray.length>0){
-			if(status > lastArray.status){
+		var lastArray = addStatusArray[addStatusArray.length - 1];
+		if (typeof lastArray != 'undefined' && lastArray.length > 0) {
+			if (status > lastArray.status) {
 				$(this).val(status);
-			}else{
+			} else {
 				$(this).val('');
 			}
-			
-		 }else{
-		
-		if (arrayStatusValueCheck.length>0) {
-			$(this).val('');
-		}else{
-			$(this).val(status);
+
+		} else {
+
+			if (arrayStatusValueCheck.length > 0) {
+				$(this).val('');
+			} else {
+				$(this).val(status);
+			}
 		}
-	}
 	});
 
 
 
 	$(document).on("change", "#task_execution_date", function () {
-			var exeDate=$(this).val();
-			var lastCheckArray= addStatusArray[addStatusArray.length - 1];
-			
-			if(typeof lastCheckArray !='undefined' &&  typeof lastCheckArray.date !='undefined'  &&  lastCheckArray.date !=''){
+		var exeDate = $(this).val();
+		var lastCheckArray = addStatusArray[addStatusArray.length - 1];
 
-				var existingDate = new Date(lastCheckArray.date);
-              var newDate = new Date(exeDate);
-			  
-				if(newDate > existingDate){
-					
-					$("#task_execution_date").val(exeDate);
-				}else{
-					
-					
-					$("#task_execution_date").val('');
-					swal.fire("Sorry", 'Execution date should be greater than previous entry', "error");
-				}
-				
-			 }
+		if (typeof lastCheckArray != 'undefined' && typeof lastCheckArray.date != 'undefined' && lastCheckArray.date != '') {
+
+			var existingDate = new Date(lastCheckArray.date);
+			var newDate = new Date(exeDate);
+
+			if (newDate > existingDate) {
+
+				$("#task_execution_date").val(exeDate);
+			} else {
+
+
+				$("#task_execution_date").val('');
+				swal.fire("Sorry", 'Execution date should be greater than previous entry', "error");
+			}
+
+		}
 	});
 
 	$(document).on("change", ".task_completion_status", function () {
 		var status = $(this).val();
-        
-		var arrayStatusValueCheck = addStatusArray.filter(function(value, index){ 
-			return parseInt(value['status']) = parseInt(status) ;
+
+		var arrayStatusValueCheck = addStatusArray.filter(function (value, index) {
+			return parseInt(value['status']) = parseInt(status);
 		});
-		
-		if (arrayStatusValueCheck.length>0) {
+
+		if (arrayStatusValueCheck.length > 0) {
 			$(this).val('');
-		}else{
+		} else {
 			$(this).val(status);
 		}
 	});
@@ -1619,7 +1770,7 @@ function staffaddtask() {
 				type: "POST",
 				enctype: "multipart/form-data",
 				url: base_url + "staff/taskSubmitProcess",
-				data: $("#addTaskForm").serialize()+'&'+$.param({ 'statusdata': addStatusArray }),
+				data: $("#addTaskForm").serialize() + '&' + $.param({ 'statusdata': addStatusArray }),
 				cache: false,
 				timeout: 600000,
 				success: function (data) {
@@ -1638,7 +1789,7 @@ function staffaddtask() {
 			$("#submitTask").attr("disabled", false);
 		}
 	});
-	
+
 }
 
 function staffedittask() {
@@ -2162,9 +2313,70 @@ function adminaddtask() {
 			$(".teamList").hide();
 		}
 	});
+
+}
+function newstaff() {
+	$(document).on("click", "#submitStaff", function () {
+		$("#addStaffForm").parsley({
+			excluded:
+				"input[type=button], input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden",
+		});
+		$("#submitStaff").attr("data-kt-indicator", "on");
+		$("#submitStaff").attr("disabled", true);
+		$("#addStaffForm").parsley().validate();
+		//console.log($('#staff_confirmpass').val());
+		//console.log($('#staff_pass').val());
+		if ($("#addStaffForm").parsley().isValid() && $('#staff_confirmpass').val() == $('#staff_pass').val()) {
+			$.ajax({
+				type: "POST",
+				enctype: "multipart/form-data",
+				url: base_url + "admin/newStaffSubmitProcess",
+				data: $("#addStaffForm").serialize(),
+				cache: false,
+				timeout: 600000,
+				success: function (data) {
+
+					var e = JSON.parse(data);
+					if (e.status == "Yes") {
+						window.location.reload();
+					} else {
+						$("#submitStaff").removeAttr("data-kt-indicator");
+						$("#submitStaff").attr("disabled", false);
+						swal.fire("Sorry", e.Message, "error");
+					}
+				},
+			});
+		} else {
+			$("#submitStaff").removeAttr("data-kt-indicator");
+			$("#submitStaff").attr("disabled", false);
+		}
+	});
+
+	startPicker = flatpickr("#work_date", {
+		onReady: function (selectedDates, dateStr, instance) {
+			
+			endPicker = flatpickr("#work_end_date", {
+				minDate: selectedDates[0],
+				dateFormat: "d-m-Y",
+			});
+		},
+		onChange: function (selectedDates, dateStr, instance) {
+			
+			endPicker = flatpickr("#work_end_date", {
+				minDate: selectedDates[0],
+				dateFormat: "d-m-Y",
+			});
+		},
+		
+		minDate: "today",
+		dateFormat: "d-m-Y",
+	});
 	
 }
-function editstaff(){
+function editstaff() {
+	var needpassword = new Object();
+	needpassword.checked = true;
+
 	$(document).on("click", "#submitTask", function () {
 		$("#addTaskForm").parsley({
 			excluded:
@@ -2179,7 +2391,7 @@ function editstaff(){
 				type: "POST",
 				enctype: "multipart/form-data",
 				url: base_url + "admin/editStaffSubmitProcess",
-				data: $("#addTaskForm").serialize(),
+				data: $("#addTaskForm").serialize() + '&' + $.param(needpassword),
 				cache: false,
 				timeout: 600000,
 				success: function (data) {
@@ -2197,6 +2409,53 @@ function editstaff(){
 			$("#submitTask").removeAttr("data-kt-indicator");
 			$("#submitTask").attr("disabled", false);
 		}
+	});
+
+	startPicker = flatpickr("#work_date", {
+		onReady: function (selectedDates, dateStr, instance) {
+			
+			endPicker = flatpickr("#work_end_date", {
+				minDate: selectedDates[0],
+				dateFormat: "d-m-Y",
+			});
+		},
+		onChange: function (selectedDates, dateStr, instance) {
+			
+			endPicker = flatpickr("#work_end_date", {
+				minDate: selectedDates[0],
+				dateFormat: "d-m-Y",
+			});
+		},
+		
+
+		minDate: "today",
+		dateFormat: "d-m-Y",
+	});
+	
+
+	if ($('#flexSwitchCheckChecked').is(':checked')) {
+		$('.passwordfields').show();
+		needpassword.checked = true;
+
+	} else {
+		$('.passwordfields').hide();
+		needpassword.checked = false;
+
+
+	}
+	$(document).on("click", "#flexSwitchCheckChecked", function () {
+		if ($(this).is(':checked')) {
+			$('.passwordfields').show();
+			$('input[type=password]').prop("disabled", false);
+			needpassword.checked = true;
+
+		}
+		else {
+			$('.passwordfields').hide();
+			$('input[type=password]').prop("disabled", true);
+			needpassword.checked = false;
+		}
+
 	});
 }
 
@@ -2263,35 +2522,35 @@ function viewassignedlist() {
 		});
 	});
 
-	$(document).on('change','.form-check-input',function(){
+	$(document).on('change', '.form-check-input', function () {
 		var count = $("input[name='allusers[]']:checked").length;
-		if(count > 0){
+		if (count > 0) {
 			$(".approveTaskStatus").show();
 			$(".rejectTaskStatus").show();
-		}else{
+		} else {
 			$(".approveTaskStatus").hide();
 			$(".rejectTaskStatus").hide();
 		}
 	});
 
-	$(".allcheck").click(function(){
+	$(".allcheck").click(function () {
 		$('input:checkbox').not(this).prop('checked', this.checked);
 	});
 
 	$(document).on("click", ".approveTaskStatus", function () {
-			$.ajax({
+		$.ajax({
 			dataType: "html",
 			type: "POST",
 			url: base_url + "staff/approveAllTaskStatus",
 			data: {
-				pagename: "approveTaskStatus",				
+				pagename: "approveTaskStatus",
 			},
 			success: function (data) {
 				$(".commonmodal").remove();
 				$(document.body).append(data);
-				$("#kt_modal_add_category_form").parsley();				
+				$("#kt_modal_add_category_form").parsley();
 				$(".commonmodal").modal("show");
-				
+
 			},
 		});
 	});
@@ -2302,7 +2561,7 @@ function viewassignedlist() {
 		$("#kt_modal_add_task_form").parsley().validate();
 		if ($("#kt_modal_add_task_form").parsley().isValid()) {
 
-			
+
 
 			const checkedList = [];
 			$("input[name='allusers[]']:checked").each(function () {
@@ -2316,7 +2575,7 @@ function viewassignedlist() {
 				type: "POST",
 				enctype: "multipart/form-data",
 				url: base_url + "staff/approveAllTaskProcess",
-				data: {checkedList:checkedList},
+				data: { checkedList: checkedList },
 				cache: false,
 				timeout: 600000,
 				success: function (data) {
@@ -2335,20 +2594,20 @@ function viewassignedlist() {
 			$("#kt_form_approve_task_submit").attr("disabled", false);
 		}
 	});
-	$(document).on("click", ".rejectTaskStatus", function () {		
+	$(document).on("click", ".rejectTaskStatus", function () {
 		$.ajax({
 			dataType: "html",
 			type: "POST",
 			url: base_url + "staff/approveAllTaskStatus",
 			data: {
-				pagename: "rejectTaskStatus",				
+				pagename: "rejectTaskStatus",
 			},
 			success: function (data) {
 				$(".commonmodal").remove();
 				$(document.body).append(data);
-				$("#kt_modal_add_category_form").parsley();				
+				$("#kt_modal_add_category_form").parsley();
 				$(".commonmodal").modal("show");
-				
+
 			},
 		});
 	});
@@ -2369,7 +2628,7 @@ function viewassignedlist() {
 				type: "POST",
 				enctype: "multipart/form-data",
 				url: base_url + "staff/rejectAllTaskProcess",
-				data: {checkedList:checkedList},
+				data: { checkedList: checkedList },
 				cache: false,
 				timeout: 600000,
 				success: function (data) {
@@ -2392,16 +2651,16 @@ function viewassignedlist() {
 
 function viewstaff() {
 	$(document).on("click", ".adminStaffProfileAddTask", function () {
-		$id=$(this).data('id');
-		$auth=$(this).data('auth');
+		$id = $(this).data('id');
+		$auth = $(this).data('auth');
 		$.ajax({
 			dataType: "html",
 			type: "POST",
 			url: base_url + "admin/adminStaffProfileAddTask",
 			data: {
 				pagename: "adminStaffProfileAddTask",
-				auth:$auth,
-				id:$id
+				auth: $auth,
+				id: $id
 			},
 			success: function (data) {
 				$(".commonmodal").remove();
@@ -2484,7 +2743,7 @@ function viewstaff() {
 	});
 }
 function viewtaskdetails() {
-	
+
 
 	$("#task_execution_date").flatpickr({
 		// minDate: "today",
@@ -2499,7 +2758,7 @@ function viewtaskdetails() {
 		dateFormat: "d-m-Y",
 	});
 
-	
+
 	$("#task_status").on("keyup change", function () {
 		var status = $(this).val();
 		if ($(this).val() > 100) {
@@ -2659,7 +2918,7 @@ function reportingstafftasks() {
 			url: base_url + "staff/ajaxreportingstafftaskslist",
 			type: "POST",
 			data: function (data) {
-				data.search.value = $(".search-in-table").val();				
+				data.search.value = $(".search-in-table").val();
 			},
 		},
 		language: {
@@ -2689,9 +2948,9 @@ function reportingstafftasks() {
 		$("#form-filter")[0].reset();
 		table.ajax.reload();
 	});
-	
+
 }
-function viewtaskbyreporting(){
+function viewtaskbyreporting() {
 	$("#kt_table_task_details").DataTable();
 	$(document).on("click", ".viewTaskStatusDetails", function () {
 		$editid = $(this).data("item");
@@ -2725,14 +2984,14 @@ function viewtaskbyreporting(){
 				pagename: "approveTaskStatus",
 				stafftaskid: $stafftaskid,
 				taskid: $taskid,
-				staffid : $staffid
+				staffid: $staffid
 			},
 			success: function (data) {
 				$(".commonmodal").remove();
 				$(document.body).append(data);
-				$("#kt_modal_add_category_form").parsley();				
+				$("#kt_modal_add_category_form").parsley();
 				$(".commonmodal").modal("show");
-				
+
 			},
 		});
 	});
@@ -2778,14 +3037,14 @@ function viewtaskbyreporting(){
 				pagename: "rejectTaskStatus",
 				stafftaskid: $stafftaskid,
 				taskid: $taskid,
-				staffid : $staffid
+				staffid: $staffid
 			},
 			success: function (data) {
 				$(".commonmodal").remove();
 				$(document.body).append(data);
-				$("#kt_modal_add_category_form").parsley();				
+				$("#kt_modal_add_category_form").parsley();
 				$(".commonmodal").modal("show");
-				
+
 			},
 		});
 	});
@@ -2819,7 +3078,7 @@ function viewtaskbyreporting(){
 		}
 	});
 
-	
+
 }
 
 function reportingaddtask() {
@@ -2887,7 +3146,7 @@ function reportingaddtask() {
 		// minDate: "today",
 		dateFormat: "d-m-Y",
 	});
-
+	
 	
 	$(document).on("click", ".assign_type", function () {
 		var assign_type = $('input[name="assign_type"]:checked').val();
@@ -2903,7 +3162,7 @@ function reportingaddtask() {
 		}
 	});
 
-	
+
 }
 function reportingstafftasksfinished() {
 	var save_method;
@@ -2917,7 +3176,7 @@ function reportingstafftasksfinished() {
 			url: base_url + "staff/ajaxreportingstafftasksfinishedlist",
 			type: "POST",
 			data: function (data) {
-				data.search.value = $(".search-in-table").val();				
+				data.search.value = $(".search-in-table").val();
 			},
 		},
 		language: {
@@ -2947,34 +3206,34 @@ function reportingstafftasksfinished() {
 		$("#form-filter")[0].reset();
 		table.ajax.reload();
 	});
-	$(document).on('change','.form-check-input',function(){
+	$(document).on('change', '.form-check-input', function () {
 		var count = $("input[name='allusers[]']:checked").length;
-		if(count > 0){
+		if (count > 0) {
 			$(".approveTaskStatus").show();
 			$(".rejectTaskStatus").show();
-		}else{
+		} else {
 			$(".approveTaskStatus").hide();
 			$(".rejectTaskStatus").hide();
 		}
 	});
-	$(".allcheck").click(function(){
+	$(".allcheck").click(function () {
 		$('input:checkbox').not(this).prop('checked', this.checked);
 	});
 
 	$(document).on("click", ".approveTaskStatus", function () {
-			$.ajax({
+		$.ajax({
 			dataType: "html",
 			type: "POST",
 			url: base_url + "staff/approveAllTaskStatus",
 			data: {
-				pagename: "approveTaskStatus",				
+				pagename: "approveTaskStatus",
 			},
 			success: function (data) {
 				$(".commonmodal").remove();
 				$(document.body).append(data);
-				$("#kt_modal_add_category_form").parsley();				
+				$("#kt_modal_add_category_form").parsley();
 				$(".commonmodal").modal("show");
-				
+
 			},
 		});
 	});
@@ -2985,7 +3244,7 @@ function reportingstafftasksfinished() {
 		$("#kt_modal_add_task_form").parsley().validate();
 		if ($("#kt_modal_add_task_form").parsley().isValid()) {
 
-			
+
 
 			const checkedList = [];
 			$("input[name='allusers[]']:checked").each(function () {
@@ -2999,7 +3258,7 @@ function reportingstafftasksfinished() {
 				type: "POST",
 				enctype: "multipart/form-data",
 				url: base_url + "staff/approveAllTaskProcess",
-				data: {checkedList:checkedList},
+				data: { checkedList: checkedList },
 				cache: false,
 				timeout: 600000,
 				success: function (data) {
@@ -3018,20 +3277,20 @@ function reportingstafftasksfinished() {
 			$("#kt_form_approve_task_submit").attr("disabled", false);
 		}
 	});
-	$(document).on("click", ".rejectTaskStatus", function () {		
+	$(document).on("click", ".rejectTaskStatus", function () {
 		$.ajax({
 			dataType: "html",
 			type: "POST",
 			url: base_url + "staff/approveAllTaskStatus",
 			data: {
-				pagename: "rejectTaskStatus",				
+				pagename: "rejectTaskStatus",
 			},
 			success: function (data) {
 				$(".commonmodal").remove();
 				$(document.body).append(data);
-				$("#kt_modal_add_category_form").parsley();				
+				$("#kt_modal_add_category_form").parsley();
 				$(".commonmodal").modal("show");
-				
+
 			},
 		});
 	});
@@ -3052,7 +3311,7 @@ function reportingstafftasksfinished() {
 				type: "POST",
 				enctype: "multipart/form-data",
 				url: base_url + "staff/rejectAllTaskProcess",
-				data: {checkedList:checkedList},
+				data: { checkedList: checkedList },
 				cache: false,
 				timeout: 600000,
 				success: function (data) {
@@ -3071,101 +3330,101 @@ function reportingstafftasksfinished() {
 			$("#kt_form_reject_task_submit").attr("disabled", false);
 		}
 	});
-	
+
 }
-function staffcalendar(){
-	var green =  KTUtil.getCssVariableValue("--kt-success-active");
-	var red =  KTUtil.getCssVariableValue("--kt-danger-active");
+function staffcalendar() {
+	var green = KTUtil.getCssVariableValue("--kt-success-active");
+	var red = KTUtil.getCssVariableValue("--kt-danger-active");
 
-var todayDate = moment().startOf("day");
+	var todayDate = moment().startOf("day");
 
-var TODAY = todayDate.format("YYYY-MM-DD");
+	var TODAY = todayDate.format("YYYY-MM-DD");
 
 
-var calendarEl = document.getElementById("kt_calendar_app");
-var calendar = new FullCalendar.Calendar(calendarEl, {
-    headerToolbar: {
-        left: "prev,next today",
-        center: "title",
-        right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth"
-    },
+	var calendarEl = document.getElementById("kt_calendar_app");
+	var calendar = new FullCalendar.Calendar(calendarEl, {
+		headerToolbar: {
+			left: "prev,next today",
+			center: "title",
+			right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth"
+		},
 
-    height: 800,
-    contentHeight: 780,
-    aspectRatio: 3,  // see: https://fullcalendar.io/docs/aspectRatio
+		height: 800,
+		contentHeight: 780,
+		aspectRatio: 3,  // see: https://fullcalendar.io/docs/aspectRatio
 
-    nowIndicator: true,
-    now: TODAY + "T09:25:00", // just for demo
+		nowIndicator: true,
+		now: TODAY + "T09:25:00", // just for demo
 
-    views: {
-        dayGridMonth: { buttonText: "month" },
-        timeGridWeek: { buttonText: "week" },
-        timeGridDay: { buttonText: "day" }
-    },
+		views: {
+			dayGridMonth: { buttonText: "month" },
+			timeGridWeek: { buttonText: "week" },
+			timeGridDay: { buttonText: "day" }
+		},
 
-    initialView: "dayGridMonth",
-    initialDate: TODAY,
+		initialView: "dayGridMonth",
+		initialDate: TODAY,
 
-    editable: true,
-    dayMaxEvents: true, // allow "more" link when too many events
-    navLinks: true,
-	displayEventTime: false,
-    events: {
-		url: base_url+'staff/gettallstafftask',
-		
-	},
-	eventClick: function(info) {
-		// alert('Event: ' + info.event.title);
-		// alert('Event: ' + );
-		$.ajax({
-			dataType: "html",
-			type: "POST",
-			url: base_url + "staff/taskCalendarView",
-			data: {
-				pagename: "taskCalendarView",
-				editid: info.event.id,
-			},
-			success: function (data) {
-				$(".commonmodal").remove();
-				$(document.body).append(data);
-							
-				$(".commonmodal").modal("show");
-				$("#kt_table_task_details_pop").DataTable();
-				
-			},
-		});
+		editable: true,
+		dayMaxEvents: true, // allow "more" link when too many events
+		navLinks: true,
+		displayEventTime: false,
+		events: {
+			url: base_url + 'staff/gettallstafftask',
 
-		// alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-		// alert('View: ' + info.view.type);
-	
-		// change the border color just for fun
-		//info.el.style.borderColor = 'red';
-	  }
-	// eventRender: function (event, element, view) {
-	// 	if (event.allDay === 'true') {
-	// 		event.allDay = true;
-	// 	} else {
-	// 		event.allDay = false;
-	// 	}
-	// },
-    // eventContent: function (info) {
-    //     var element = $(info.el);
+		},
+		eventClick: function (info) {
+			// alert('Event: ' + info.event.title);
+			// alert('Event: ' + );
+			$.ajax({
+				dataType: "html",
+				type: "POST",
+				url: base_url + "staff/taskCalendarView",
+				data: {
+					pagename: "taskCalendarView",
+					editid: info.event.id,
+				},
+				success: function (data) {
+					$(".commonmodal").remove();
+					$(document.body).append(data);
 
-    //     if (info.event.extendedProps && info.event.extendedProps.description) {
-    //         if (element.hasClass("fc-day-grid-event")) {
-    //             element.data("content", info.event.extendedProps.description);
-    //             element.data("placement", "top");
-    //             KTApp.initPopover(element);
-    //         } else if (element.hasClass("fc-time-grid-event")) {
-    //             element.find(".fc-title").append("<div class="fc-description">" + info.event.extendedProps.description + "</div>");
-    //         } else if (element.find(".fc-list-item-title").lenght !== 0) {
-    //             element.find(".fc-list-item-title").append("<div class="fc-description">" + info.event.extendedProps.description + "</div>");
-    //         }
-    //     }
-    // }
-});
+					$(".commonmodal").modal("show");
+					$("#kt_table_task_details_pop").DataTable();
 
-calendar.render();
+				},
+			});
+
+			// alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+			// alert('View: ' + info.view.type);
+
+			// change the border color just for fun
+			//info.el.style.borderColor = 'red';
+		}
+		// eventRender: function (event, element, view) {
+		// 	if (event.allDay === 'true') {
+		// 		event.allDay = true;
+		// 	} else {
+		// 		event.allDay = false;
+		// 	}
+		// },
+		// eventContent: function (info) {
+		//     var element = $(info.el);
+
+		//     if (info.event.extendedProps && info.event.extendedProps.description) {
+		//         if (element.hasClass("fc-day-grid-event")) {
+		//             element.data("content", info.event.extendedProps.description);
+		//             element.data("placement", "top");
+		//             KTApp.initPopover(element);
+		//         } else if (element.hasClass("fc-time-grid-event")) {
+		//             element.find(".fc-title").append("<div class="fc-description">" + info.event.extendedProps.description + "</div>");
+		//         } else if (element.find(".fc-list-item-title").lenght !== 0) {
+		//             element.find(".fc-list-item-title").append("<div class="fc-description">" + info.event.extendedProps.description + "</div>");
+		//         }
+		//     }
+		// }
+	});
+
+	calendar.render();
 
 
 }
@@ -3297,12 +3556,12 @@ function rejectedtasks() {
 	});
 }
 
-function staffcalendarreporting(){
+function staffcalendarreporting() {
 	$(document).on("change", ".dataselectfilter", function () {
-		
+
 		$month = $("#month option:selected").val();
 		$year = $("#year option:selected").val();
-		window.location.href=base_url+'staff/staffcalendar/'+$month+'/'+$year;
+		window.location.href = base_url + 'staff/staffcalendar/' + $month + '/' + $year;
 	});
 }
 $(document).on("click", ".deleteItems", function () {
@@ -3331,6 +3590,525 @@ $(document).on("click", ".deleteItems", function () {
 		}
 	});
 });
+function taskdesignation() {
+	var save_method;
+	var table;
+	table = $("#kt_table_Designation").DataTable({
+		destroy: true,
+		processing: true,
+		serverSide: true,
+		order: [],
+		ajax: {
+			url: base_url + "admin/ajaxdesignationlist",
+			type: "POST",
+			data: function (data) {
+				data.search.value = $(".search-in-table").val();
+			},
+		},
+		language: {
+			emptyTable: "No designation available....!",
+			processing: "Loading designation ",
+		},
+		columnDefs: [
+			{
+				targets: "no-sort",
+				orderable: false,
+			},
+		],
+	});
+
+	$(document).on("click", "#btn-filter", function (event) {
+		table.ajax.reload();
+	});
+	$(document).on("keyup", ".search-in-table", function (event) {
+		table.ajax.reload();
+	});
+
+	$(document).on("click", "#btn-reset", function (event) {
+		$("#form-filter")[0].reset();
+		table.ajax.reload();
+	});
+	$(document).on("click", "#btn-cancel", function (event) {
+		$("#form-filter")[0].reset();
+		table.ajax.reload();
+	});
+	$(document).on("click", ".addDesignation", function () {
+		$.ajax({
+			dataType: "html",
+			type: "POST",
+			url: base_url + "admin/addDesignation",
+			data: {
+				pagename: "addDesignation",
+			},
+			success: function (data) {
+				$(".commonmodal").remove();
+				$(document.body).append(data);
+				$("#kt_modal_add_category_form").parsley();
+				$(".commonmodal").modal("show");
+			},
+		});
+	});
+	$(document).on("click", "#kt_add_category_submit", function () {
+		$("#kt_add_category_submit").attr("data-kt-indicator", "on");
+		$("#kt_add_category_submit").attr("disabled", true);
+		$("#kt_modal_add_category_form").parsley().validate();
+		if ($("#kt_modal_add_category_form").parsley().isValid()) {
+			$.ajax({
+				type: "POST",
+				enctype: "multipart/form-data",
+				url: base_url + "admin/designationSubmitProcess",
+				data: $("#kt_modal_add_category_form").serialize(),
+				cache: false,
+				timeout: 600000,
+				success: function (data) {
+					var e = JSON.parse(data);
+					if (e.status == "Yes") {
+						window.location.reload();
+					} else {
+						$("#kt_add_category_submit").removeAttr("data-kt-indicator");
+						$("#kt_add_category_submit").attr("disabled", false);
+						swal.fire("Sorry", e.Message, "error");
+					}
+				},
+			});
+		} else {
+			$("#kt_add_category_submit").removeAttr("data-kt-indicator");
+			$("#kt_add_category_submit").attr("disabled", false);
+		}
+	});
+	$(document).on("click", ".designationEdit", function () {
+		$editid = $(this).data("item");
+		$.ajax({
+			dataType: "html",
+			type: "POST",
+			url: base_url + "admin/designationEdit",
+			data: {
+				pagename: "addDesignation",
+				editid: $editid,
+			},
+			success: function (data) {
+				$(".commonmodal").remove();
+				$(document.body).append(data);
+				$("#kt_modal_add_category_form").parsley();
+				$(".commonmodal").modal("show");
+			},
+		});
+	});
+	$(document).on("click", ".deleteDesignation", function () {
+		var itemid = $(this).data("itemid");
+
+		swal
+			.fire({
+				title: "Are you sure?",
+				text: "you wish to change this item status?",
+				icon: "info",
+				buttonsStyling: false,
+				showCancelButton: true,
+				confirmButtonText: "Ok",
+				cancelButtonText: "No, cancel it",
+				customClass: {
+					confirmButton: "btn btn-primary",
+					cancelButton: "btn btn-danger",
+				},
+			})
+			.then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						url: base_url + "admin/deleteDesignation/" + itemid,
+						type: "POST",
+						dataType: "text",
+						success: function (retObj) {
+							window.location.reload();
+						},
+					});
+				}
+			});
+	});
+}
+
+
+$(document).on("click", ".addratingpopup", function () {
+	$editid = $(this).data("item");
+	$.ajax({
+		dataType: "html",
+		type: "POST",
+		url: base_url + "staff/viewRatingPerson",
+		data: {
+			pagename: "viewratingstaff",
+			editid: $editid,
+		},
+		success: function (data) {
+			$(".commonmodal").remove();
+			$(document.body).append(data);
+			
+			$(".commonmodal").modal("show");
+			$("#rating_date").flatpickr({
+				// minDate: "today",
+				dateFormat: "d-m-Y",
+			});
+			
+		},
+	});
+	
+});
+$(document).ready(function() {
+
+    (function($){
+    
+        $.extend({
+            
+            APP : {                
+                
+                formatTimer : function(a) {
+                    if (a < 10) {
+                        a = '0' + a;
+                    }                              
+                    return a;
+                },    
+                
+                startTimer : function(dir) {
+                    
+                    var a;
+                    
+                    // save type
+                    $.APP.dir = dir;
+                    
+                    // get current date
+                    $.APP.d1 = new Date();
+                    
+  
+                    
+                    switch($.APP.state) {
+                            
+                        case 'pause' :
+                            
+                            // resume timer
+                            // get current timestamp (for calculations) and
+                            // substract time difference between pause and now
+                            $.APP.t1 = $.APP.d1.getTime() - $.APP.td;                            
+                            
+                        break;
+                            
+                        default :
+                            
+                            // get current timestamp (for calculations)
+                            $.APP.t1 = $.APP.d1.getTime(); 
+                            
+                            // if countdown add ms based on seconds in textfield
+                            if ($.APP.dir === 'cd') {
+                                $.APP.t1 += parseInt($('#cd_seconds').val())*1000;
+                            }    
+                        
+                        break;
+                            
+                    }                                   
+                    
+                    // reset state
+                    $.APP.state = 'alive';   
+                    $('#' + $.APP.dir + '_status').html('Running');
+                    
+                    // start loop
+                    $.APP.loopTimer();
+                    
+                },
+                
+                pauseTimer : function() {
+                    
+                    // save timestamp of pause
+                    $.APP.dp = new Date();
+                    $.APP.tp = $.APP.dp.getTime();
+                    
+                    // save elapsed time (until pause)
+                    $.APP.td = $.APP.tp - $.APP.t1;
+                    
+                    // change button value
+                    $('#' + $.APP.dir + '_start').val('Resume');
+                    
+                    // set state
+                    $.APP.state = 'pause';
+                    $('#' + $.APP.dir + '_status').html('Paused');
+                    
+                },
+                
+                // stopTimer : function() {
+                    
+                //     // change button value
+                //     $('#' + $.APP.dir + '_start').val('Restart');                    
+                    
+                //     // set state
+                //     $.APP.state = 'stop';
+                //     $('#' + $.APP.dir + '_status').html('Stopped');
+                    
+                // },
+                
+                // resetTimer : function() {
+
+                //     // reset display
+                //     $('#' + $.APP.dir + '_ms,#' + $.APP.dir + '_s,#' + $.APP.dir + '_m,#' + $.APP.dir + '_h').html('00');                 
+                    
+                //     // change button value
+                //     $('#' + $.APP.dir + '_start').val('Start');                    
+                    
+                //     // set state
+                //     $.APP.state = 'reset';  
+                //     $('#' + $.APP.dir + '_status').html('Reset & Idle again');
+                    
+                // },
+                
+                // endTimer : function(callback) {
+                   
+                //     // change button value
+                //     $('#' + $.APP.dir + '_start').val('Restart');
+                    
+                //     // set state
+                //     $.APP.state = 'end';
+                    
+                //     // invoke callback
+                //     if (typeof callback === 'function') {
+                //         callback();
+                //     }    
+                    
+                // },    
+                
+                loopTimer : function() {
+                    
+                    var td;
+                    var d2,t2;
+                    
+                    var ms = 0;
+                    var s  = 0;
+                    var m  = 0;
+                    var h  = 0;
+                    
+                    if ($.APP.state === 'alive') {
+                                
+                        // get current date and convert it into 
+                        // timestamp for calculations
+                        d2 = new Date();
+                        t2 = d2.getTime();   
+                        
+                        // calculate time difference between
+                        // initial and current timestamp
+                        if ($.APP.dir === 'sw') {
+                            td = t2 - $.APP.t1;
+                        // reversed if countdown
+                        } else {
+                            td = $.APP.t1 - t2;
+                            // if (td <= 0) {
+                            //     // if time difference is 0 end countdown
+                            //     $.APP.endTimer(function(){
+                            //         $.APP.resetTimer();
+                            //         $('#' + $.APP.dir + '_status').html('Ended & Reset');
+                            //     });
+                            // }    
+                        }    
+                        
+                        // calculate milliseconds
+                        ms = td%1000;
+                        if (ms < 1) {
+                            ms = 0;
+                        } else {    
+                            // calculate seconds
+                            s = (td-ms)/1000;
+                            if (s < 1) {
+                                s = 0;
+                            } else {
+                                // calculate minutes   
+                                var m = (s-(s%60))/60;
+                                if (m < 1) {
+                                    m = 0;
+                                } else {
+                                    // calculate hours
+                                    var h = (m-(m%60))/60;
+                                    if (h < 1) {
+                                        h = 0;
+                                    }                             
+                                }    
+                            }
+                        }
+                      
+                        // substract elapsed minutes & hours
+                        ms = Math.round(ms/100);
+                        s  = s-(m*60);
+                        m  = m-(h*60);                                
+                        
+                        // update display
+                        $('#' + $.APP.dir + '_ms').html($.APP.formatTimer(ms));
+                        $('#' + $.APP.dir + '_s').html($.APP.formatTimer(s));
+                        $('#' + $.APP.dir + '_m').html($.APP.formatTimer(m));
+                        $('#' + $.APP.dir + '_h').html($.APP.formatTimer(h));
+                        
+                        // loop
+                        $.APP.t = setTimeout($.APP.loopTimer,1);
+                    
+                    } else {
+                    
+                        // kill loop
+                        clearTimeout($.APP.t);
+                        return true;
+                    
+                    }  
+                    
+                }
+                    
+            }    
+        
+        });
+          
+        $(document).ready(function(){
+            $.APP.startTimer('sw');
+        });    
+
+        
+                
+    })(jQuery);
+        
+});
+function task_rating(rid){
+
+var save_method;
+	var table;
+	table = $("#kt_usersrating").DataTable({
+		destroy: true,
+		processing: true,
+		serverSide: true,
+		order: [],
+		ajax: {
+			url: base_url + "staff/ajax_get_staffrate",
+			type: "POST",
+			data: function (data) {
+				//data.search.value = $(".search-in-table").val();
+				data.id = rid;				
+			},
+		},
+		language: {
+			emptyTable: "No tasks available....!",
+			processing: "Loading tasks ",
+		},
+		columnDefs: [
+			{
+				targets: "no-sort",
+				orderable: false,
+			},
+		],
+	});
+
+	$(document).on("click", "#btn-filter", function (event) {
+		table.ajax.reload();
+	});
+	$(document).on("keyup", ".search-in-table", function (event) {
+		table.ajax.reload();
+	});
+
+	$(document).on("click", "#btn-reset", function (event) {
+		$("#form-filter")[0].reset();
+		table.ajax.reload();
+	});
+	$(document).on("click", "#btn-cancel", function (event) {
+		$("#form-filter")[0].reset();
+		table.ajax.reload();
+	});
+	$(document).on("click", "#rating_submit", function () {
+		$("#kt_modal_add_category_form").parsley({
+			excluded:
+				"input[type=button], input[type=submit], input[type=reset]",
+		});	
+		$("#rating_submit").attr("data-kt-indicator", "on");
+		$("#rating_submit").attr("disabled", true);
+		$("#kt_modal_add_category_form").parsley().validate();
+		if ($("#kt_modal_add_category_form").parsley().isValid()) {
+			$.ajax({
+				type: "POST",
+				enctype: "multipart/form-data",
+				url: base_url + "staff/rating_submit",
+				data: $("#kt_modal_add_category_form").serialize(),
+				cache: false,
+				timeout: 600000,
+				success: function (data) {
+					console.log (data);
+					var e = JSON.parse(data);
+					if (e.status == "Yes") {
+						$(".commonmodal").modal("hide");
+						$(".commonmodal").remove();
+						table.ajax.reload();
+					} else {
+						$("#rating_submit").removeAttr("data-kt-indicator");
+						$("#rating_submit").attr("disabled", false);
+						swal.fire("Sorry", e.Message, "error");
+					}
+				},
+			});
+		} else {
+			$("#rating_submit").removeAttr("data-kt-indicator");
+			$("#rating_submit").attr("disabled", false);
+		}
+		
+	});
+	$(document).on("click", ".rate_edit", function () {
+		$editid = $(this).data("item");
+		$.ajax({
+			dataType: "html",
+			type: "POST",
+			url: base_url + "staff/rating_edit",
+			data: {
+				pagename: "editstaffrating",
+				editid: $editid,
+			},
+			success: function (data) {
+				$(".commonmodal").remove();
+				$(document.body).append(data);
+				$("#kt_modal_add_category_form").parsley();
+				$(".commonmodal").modal("show");
+				$("#rating_date").flatpickr({
+					// minDate: "today",
+					dateFormat: "d-m-Y",
+				});
+				
+			},
+		});
+		
+	
+	});
+	$(document).on("click", "#rating_edit", function () {
+		$("#kt_modal_add_category_form").parsley({
+			excluded:
+				"input[type=button], input[type=submit], input[type=reset]",
+		});	
+		$("#rating_edit").attr("data-kt-indicator", "on");
+		$("#rating_edit").attr("disabled", true);
+		$("#kt_modal_add_category_form").parsley().validate();
+		if ($("#kt_modal_add_category_form").parsley().isValid()) {
+			$.ajax({
+				type: "POST",
+				enctype: "multipart/form-data",
+				url: base_url + "staff/ratingedit_submit",
+				data: $("#kt_modal_add_category_form").serialize(),
+				cache: false,
+				timeout: 600000,
+				success: function (data) {
+					console.log (data);
+					var e = JSON.parse(data);
+					if (e.status == "Yes") {
+						$(".commonmodal").modal("hide");
+						$(".commonmodal").remove();
+						table.ajax.reload();
+					} else {
+						$("#rating_edit").removeAttr("data-kt-indicator");
+						$("#rating_edit").attr("disabled", false);
+						swal.fire("Sorry", e.Message, "error");
+					}
+				},
+			});
+		} else {
+			$("#rating_edit").removeAttr("data-kt-indicator");
+			$("#rating_edit").attr("disabled", false);
+		}
+		
+	});
+	
+
+
+	}
 
 (function ($) {
 	"use strict";

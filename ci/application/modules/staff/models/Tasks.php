@@ -31,6 +31,9 @@ class Tasks extends My_Model
 
     public $column_order = array('a.taskid', 'a.task_title', 'b.tc_name','c.sc_name','a.task_priority','e.tsa_completed_status', 'a.task_addedon');
     public $column_search = array('a.taskid', 'a.task_title','b.tc_name','c.sc_name','a.task_priority','e.tsa_completed_status', 'a.task_addedon');
+    public $column_order_rating = array('a.rating','a.rating_date');
+    public $column_search_rating = array('a.rating','a.rating_date');
+    public $rate_order = array('a.rating_id' => 'desc');
     public $order = array('a.task_addedon' => 'desc');
 
     private function _get_datatables_query()
@@ -142,7 +145,7 @@ class Tasks extends My_Model
 
         $this->db->from('ah_tasks a');
         $this->db->join('ah_task_staff e', 'e.tsa_taskid=a.taskid', 'inner');
-        $this->db->join('ah_task_category b', 'b.task_categoryid=a.task_category', 'inner');
+        $this->db->join('ah_task_category b', 'b.task_categoryid=a.task_category','inner');
         $this->db->join('ah_subcategory c', 'c.subcategoryid=a.task_subcategory', 'left');
         $this->db->join('ck_authentication d', 'd.authenticationid=a.task_staffid', 'inner');
         $this->db->where('e.tsa_staffid', $id);
@@ -151,6 +154,7 @@ class Tasks extends My_Model
         $query = $this->db->get();
         return $query->result();
     }
+   
 
     public function gettaskdetails($id,$user='')
     {
@@ -336,8 +340,99 @@ class Tasks extends My_Model
         $this->db->where('e.tsa_completed_status','2');
        // $this->db->group_by('a.taskid');
         return $this->db->count_all_results();
+
+    }
+    public function getstaffrating()
+    {
+        $this->_get_datatables_querystaff_rating();
+        if ($_POST['length'] != -1) {
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+
+        $query = $this->db->get();
+        // echo $this->db->last_query();
+        return $query->result();
+    }
+    private function _get_datatables_querystaff_rating()
+    {
+        $this->db->select('a.*,b.rating_option_title');
+        $this->db->from('ah_user_rating a');
+        $this->db->join('ah_rating_option b','b.rating_option_id=a.rating','inner');
+        $this->db->where('a.staff_id',$this->input->post('id'));
+        if($this->session->userdata('usertype')!=1){
+
+            $this->db->where('a.reporting_staff_id',$this->session->userdata('authenticationid'));
+        }
+		 
+
+        $i = 0;
+
+        foreach ($this->column_search_rating as $item) {
+            if ($_POST['search']['value']) {
+                if ($i === 0) {
+                    $this->db->group_start();
+                    $this->db->like($item, $_POST['search']['value']);
+                } else {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+                if (count($this->column_search_rating) - 1 == $i) { //last loop
+                    $this->db->group_end();
+                }
+                //close bracket
+            }
+            $i++;
+        }
+        if (isset($_POST['order'])) {
+            $this->db->order_by($this->column_order_rating[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        } elseif (isset($this->order)) {
+            $rate_order = $this->rate_order;
+            $this->db->order_by(key($rate_order), $rate_order[key($rate_order)]);
+        }
     }
 
+    public function count_all_staff_rating()
+    {
+        $this->db->select('a.*');
+        $this->db->from('ah_user_rating a');
+       $this->db->where('a.staff_id',$this->input->post('id'));
+        //$this->db->where('a.reporting_staff_id',$this->session->userdata('authenticationid'));
+      
+        return $this->db->count_all_results();
+    }
+
+    public function count_filteredstaff_rate()
+    {
+        $this->_get_datatables_querystaff_rating();
+        $query = $this->db->get();
+        // echo $this->db->last_query();
+        return $query->num_rows();
+    }
+
+    public function getallratingoptions()
+    {
+        $this->db->select('a.*');
+        $this->db->from('ah_rating_option a');
+       $query = $this->db->get();
+        // echo $this->db->last_query();
+        return $query->result();
+    }
+    public function get_rating_sumbit($data)
+    {
+        $this->db->insert('ah_user_rating',$data );
+        return ($this->db->affected_rows() >0 ) ? true : false;
+
+    }
+public function show_staffrating($id){
+   
+    $this->db->select('a.comment');
+        $this->db->from('ah_user_rating a');
+
+        //$this->db->join('ah_rating_option b','b.rating_option_id == a.rating_id','inner');
+       $this->db->where('a.staff_id',$id);
+        $this->db->where('a.reporting_staff_id',$this->session->userdata('authenticationid'));
+        $query = $this->db->get();
+        return $query->result();
+}
     public function getstaffalltasksonadate($id,$date)
     {
         $this->db->select('a.*,e.*');
@@ -354,4 +449,24 @@ class Tasks extends My_Model
         $query = $this->db->get();
         return $query->result();
     }
+public function get_ratebyid($id)
+{
+    $this->db->select('a.*');
+    $this->db->from('ah_user_rating a');
+   $this->db->where('a.rating_id',$id);
+    $this->db->where('a.reporting_staff_id',$this->session->userdata('authenticationid'));
+    $query = $this->db->get();
+    return $query->row();
+}
+
+
+
+
+    
+
+
+        
+
+    
+
 }

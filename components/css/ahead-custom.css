@@ -201,3 +201,22 @@ margin-bottom: 0px;}
 .period_mn p{margin: 20px 0px 0px 0px;}
 .d_line1 p::first-letter,.d_line2 p::first-letter, .detail_s::first-letter{
     text-transform: capitalize;}
+    #header_timer span{
+font-size: 30px;
+
+
+    }
+    #header_timer{
+        margin-right: 100px;
+    }
+
+
+.changepword .form-check-input:checked {
+		background-color: #b20f55 !important;
+		border-color: #b20f55 !important;
+	}
+.pad-right{
+	padding-right: 0px !important;
+}
+
+    

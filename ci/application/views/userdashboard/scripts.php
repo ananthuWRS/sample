@@ -115,16 +115,17 @@ if($this->session->userdata('usertype') !=1 && ($this->reportingPerson <= 0) ){
 ?>
 <script>
 	var now = new Date();
-var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 17, 00, 0, 0) - now;
+var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 17, 0, 0, 0) - now;
 if (millisTill10 < 0) {
      millisTill10 += 86400000; //24 Hours (hrs)
 }
 //console.log(millisTill10);
  setTimeout(function(){
-	Swal.fire(
-				'Please submit your work report',
-			  )
-			}, millisTill10);
+	Swal.fire({
+		title:'Submit your work report.',
+		icon: "success",
+		icon: 'warning',
+	},)}, millisTill10);
 
 	</script>
 <?php	

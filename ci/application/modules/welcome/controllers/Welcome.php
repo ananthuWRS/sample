@@ -49,6 +49,8 @@ class Welcome extends MY_Controller
                                 );
                                 $this->session->set_userdata($sess_data);
                                 $this->session->set_flashdata('successmessage', 'User authentication success');
+                                $login_tym = date('Y-m-d H:i:s'); 
+                                
                                 $result = array('status' => 'Yes', 'Message' => 'User authentication success', 'url' => 'admin');
                             } elseif ($userrole == roles::teachingstaff) {
                                 $sess_data = array(
@@ -66,6 +68,7 @@ class Welcome extends MY_Controller
                                 $this->session->set_userdata($sess_data);
                                 $this->session->set_flashdata('successmessage', 'User authentication success');
                                 $result = array('status' => 'Yes', 'Message' => 'User authentication success', 'url' => $redirecturl);
+
                             } elseif ($userrole == roles::nonteachingstaff) {
                                 $sess_data = array(
                                     'authenticationid' => $success->authenticationid,
@@ -103,6 +106,7 @@ class Welcome extends MY_Controller
             }
         } else {
             $this->session->set_flashdata('errormessage', 'Invalid request found');
+
             $result = array('status' => 'No', 'Message' => 'Invalid request found');
         }
 
