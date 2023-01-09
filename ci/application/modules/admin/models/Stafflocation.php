@@ -110,4 +110,60 @@ class Stafflocation extends My_Model
 		$this->db->where('sl_status ', '0');
 		$this->db->update('ah_stafflocation');
 	}
+public function getlatest_staff_location ($id)
+{
+	$this->db->select('*');
+	$this->db->from('ah_stafflocation a');
+	$this->db->where('a.sl_status', '0');	
+	$this->db->where('a.sl_staff_id ', $id);
+	$this->db->order_by('a.sl_staff_id','DESC');
+	$this->db->limit(1);
+	$query = $this->db->get();
+    return $query->result();
+}
+public function location_sumbit($data)
+{
+	$this->db->insert('ah_stafflocation',$data );
+	return ($this->db->affected_rows() >0 ) ? true : false;
+
+}
+public function get_all_location_submit($id)
+{
+	$this->db->select('*');
+	$this->db->from('ah_stafflocation a');
+	$this->db->join('ah_location b','b.location_id=a.sl_location_type','inner');  
+	$this->db->where('a.sl_status', '0');	
+	$this->db->where('a.sl_staff_id ', $id);
+	$this->db->order_by('a.stafflocation_id ','DESC');
+	$query = $this->db->get();
+    return $query->result();
+
+}
+public function get_staff_location($id)
+{
+	$this->db->select('*');
+	$this->db->from('ah_stafflocation a');
+	$this->db->where('a.sl_status', '0');	
+	$this->db->where('a.stafflocation_id ', $id);
+	$query = $this->db->get();
+    return $query->row();	
+}
+public function edit_location_sumbit($data,$id)
+{
+	    $this->db->set($data);
+		$this->db->where('stafflocation_id', $id);
+		$this->db->update('ah_stafflocation');
+		$this->db->trans_complete();
+		// was there any update or error?
+		if ($this->db->affected_rows() == '1') {
+			return TRUE;
+		} else {
+			// any trans error?
+			if ($this->db->trans_status() === FALSE) {
+				return false;
+			}
+			return true;
+		}
+
+}
 }

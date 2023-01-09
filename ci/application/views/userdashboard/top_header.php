@@ -30,6 +30,35 @@
 				<!--begin::Header wrapper-->
 				<div class="d-flex align-items-stretch justify-content-between flex-lg-grow-1" id="kt_app_header_wrapper">
 					<!--begin::Menu wrapper-->
+					<!---->
+
+
+					<div class="user_timer flex-grow-1 d-flex align-items-center" id="header_timer">
+						<div class="d-flex justify-content-start  align-items-center" style="width:250px;">
+							<audio loop  id="myAudio">
+								<!---https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3-->
+								<source src="<?= base_url()?>tone.mp3" type="audio/mp3">
+
+								Your browser does not support the audio element.
+							</audio>
+							<div class=" timerDisplay">
+
+								<span id="hour" class="cloclSpan"></span>
+								<span id="min" class="cloclSpan"></span>
+								<span id="sec"></span>
+							</div>
+							<div class="buttons" style="">
+
+
+								<button id="pauseTimer"class="timeControlBtn" title="Pause"><i class="fa fa-pause" aria-hidden="true"></i></button>
+								<button id="startTimer" class="timeControlBtn"title="Start"><i class="fa fa-play" aria-hidden="true"></i></button>
+								<!-- <button id="resetTimer"title="reset"><i class="fa fa-reset" aria-hidden="true"></i></button>-->
+							</div>
+
+						</div>
+
+					</div>
+
 					<div class="app-header-menu app-header-mobile-drawer align-items-stretch" data-kt-drawer="true" data-kt-drawer-name="app-header-menu" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="250px" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_app_header_menu_toggle" data-kt-swapper="true" data-kt-swapper-mode="{default: 'append', lg: 'prepend'}" data-kt-swapper-parent="{default: '#kt_app_body', lg: '#kt_app_header_wrapper'}">
 
 					</div>
@@ -39,11 +68,11 @@
 						<!--begin::User menu-->
 						<div class="app-navbar-item ms-1 ms-lg-3" id="kt_header_user_menu_toggle">
 							<!--begin::Menu wrapper-->
-							<div class="user_timer" id="header_timer">
+							<!--<div class="user_timer" id="header_timer">
 								<span id="sw_h">00</span>:
 								<span id="sw_m">00</span>:
 								<span id="sw_s">00</span>
-							</div>
+							</div>-->
 							<div class="cursor-pointer symbol symbol-35px symbol-md-40px user_nm" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
 								<span><?= $this->userlogged_data->au_crickf ?> <?= $this->userlogged_data->au_crickl ?></span>
 								<i class="arrow down"></i>
@@ -65,7 +94,7 @@
 													<?= $this->userlogged_data->au_crickl ?></span>
 												<span class="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2"><?= $this->session->userdata('usertypename') ?></span>
 											</div>
-											<a href="#" class="fw-semibold text-muted text-hover-primary fs-7"><?= $this->userlogged_data->au_cricke ?></a>
+											<span class="fw-semibold text-muted text-hover-primary fs-7"><?= $this->userlogged_data->au_cricke ?></span>
 										</div>
 										<!--end::Username-->
 									</div>
@@ -76,7 +105,10 @@
 								<!--end::Menu separator-->
 								<!--begin::Menu item-->
 								<div class="menu-item px-5">
-									<a href="<?= base_url() ?>welcome/profile" class="menu-link px-5">My Profile</a>
+
+									<a href="<?= base_url() ?>welcome/profile/<?= $this->session->userdata('authenticationid'); ?>" class="menu-link px-5">My Profile</a>
+
+
 								</div>
 								<!--end::Menu item-->
 
@@ -93,7 +125,7 @@
 								<!--end::Menu item-->
 								<!--begin::Menu item-->
 								<div class="menu-item px-5">
-									<a href="<?= base_url() ?>welcome/do_logout" class="menu-link px-5">Sign Out</a>
+									<a id="signOutBtn" href="<?= base_url() ?>welcome/do_logout" class="menu-link px-5">Sign Out</a>
 								</div>
 								<!--end::Menu item-->
 							</div>

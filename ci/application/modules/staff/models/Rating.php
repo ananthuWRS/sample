@@ -16,18 +16,16 @@ class Rating extends My_Model
 
     );
 
-    // public function getstaffrating_count($id,$rid)
-    // {
-    //     //$month = date('m');
-    //     //$year = date('Y');
-    //     $this->db->select('count(rating_id) as ratingcnt');
-    //     $this->db->from('ah_user_rating a');
-    //     $this->db->where('a.staff_id', $id);
-    //     $this->db->where('a.reporting_staff_id', $rid);
-    //    // $this->db->where("DATE_FORMAT(a.rating_date,'%m')", $month);
-    //     //$this->db->where("DATE_FORMAT(a.rating_date,'%Y')", $year );
-    //     $query = $this->db->get();
-    //     return $query->row();
-    // }
+    public function getstaffrating_count($id,$rid,$date)
+    {
+        $sel_date = date('Y-m-d', strtotime($date));
+        $this->db->select('count(rating_id) as ratingcnt');
+        $this->db->from('ah_user_rating a');
+        $this->db->where('a.staff_id', $id);
+        $this->db->where('a.reporting_staff_id', $rid);
+        $this->db->where("a.rating_date", $sel_date);
+        $query = $this->db->get();
+        return $query->row();
+    }
 
 }

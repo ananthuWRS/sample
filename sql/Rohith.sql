@@ -12,3 +12,9 @@ ALTER TABLE `ah_stafflocation` ADD CONSTRAINT `staff_id` FOREIGN KEY (`sl_staff_
 
 ALTER TABLE `ah_stafflocation` ADD `sl_start_date` DATETIME NULL AFTER `sl_updatedon`, ADD `sl_end_date` DATETIME NULL AFTER `sl_start_date`;
 
+CREATE TABLE `amrithaahead`.`ah_usertime` (`usertime_id` INT NOT NULL AUTO_INCREMENT , `ut_date` DATETIME NOT NULL , `ut_login_time` DATETIME NOT NULL , `ut_status` TINYINT NOT NULL , PRIMARY KEY (`usertime_id`)) ENGINE = InnoDB;
+ALTER TABLE `ah_usertime` ADD `ut_staff_id` INT NOT NULL AFTER `usertime_id`;
+ALTER TABLE `ah_usertime` ADD `ut_logout_time` DATETIME NULL AFTER `ut_login_time`;
+ALTER TABLE `ah_usertime` ADD `ut_total_time` DATETIME NULL AFTER `ut_logout_time`;
+ALTER TABLE `ah_usertime` CHANGE `ut_total_time` `ut_total_time` TIME NULL DEFAULT NULL;
+ALTER TABLE `ah_usertime` ADD `ut_json_time` JSON NULL DEFAULT NULL AFTER `ut_total_time`;

@@ -89,7 +89,7 @@ define('EncriptKey', 'AMRITHAaHeAD#$@__2022');
 define('HASHCODE', 'AMRITHAaHeAD@#$%^' . date('dmY'));
 
 
-define('WEBSITE_NAME', 'AMRITA');
+define('WEBSITE_NAME', 'Amrita Vishwa Vidyapeetham');
 
 define('WEBSITE_ADDRESS', 'Amritha <br> India');
 define('SITE_NAME', 'AMRITHA');

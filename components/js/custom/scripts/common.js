@@ -17,4 +17,4 @@ $(document).on("click", ".syncEmployeesList", function () {
 			 table.ajax.reload();
 		},
 	});
-});
+});	

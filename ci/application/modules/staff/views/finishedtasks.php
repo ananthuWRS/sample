@@ -15,7 +15,7 @@
 										<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
 											<!--begin::Item-->
 											<li class="breadcrumb-item text-muted">
-												<a href="index.html" class="text-muted text-hover-primary">Home</a>
+												<a href="<?=base_url()?>/staff" class="text-muted text-hover-primary">Home</a>
 											</li>
 											<!--end::Item-->
 											<!--begin::Item-->
@@ -24,7 +24,7 @@
 											</li>
 											<!--end::Item-->
 											<!--begin::Item-->
-											<li class="breadcrumb-item text-muted">Task Management</li>
+											<li class="breadcrumb-item text-muted">My tasks</li>
 											<!--end::Item-->
 											<!--begin::Item-->
 											<li class="breadcrumb-item">
@@ -32,7 +32,7 @@
 											</li>
 											<!--end::Item-->
 											<!--begin::Item-->
-											<li class="breadcrumb-item text-muted">Tasks</li>
+											<li class="breadcrumb-item text-muted">Finished Task list</li>
 											<!--end::Item-->
 										</ul>
 										<!--end::Breadcrumb-->

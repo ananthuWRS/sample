@@ -14,7 +14,7 @@
                 <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
                     <!--begin::Item-->
                     <li class="breadcrumb-item text-muted">
-                        <a href="index.html" class="text-muted text-hover-primary">Home</a>
+                        <a href="<?=base_url()?>/staff" class="text-muted text-hover-primary">Home</a>
                     </li>
                     <!--end::Item-->
                     <!--begin::Item-->
@@ -53,6 +53,7 @@
     <!--begin::Content-->
     <div id="kt_app_content" class="app-content flex-column-fluid">
         <!--begin::Content container-->
+    
         <div id="kt_app_content_container" class="app-container container-xxl">
             <!--begin::Layout-->
             <div class="d-flex flex-column flex-lg-row">
@@ -223,14 +224,96 @@
                                 </div>
                             </div>
                             <!--end::Details content-->
-                        </div>
+                               </div>
                         <!--end::Card body-->
+                        
                     </div>
                     <!--end::Card-->
+                    <!--begin::location-->
+                    <div class="card card-flush mb-6 mb-xl-9">
+                                <!--begin::Card header-->
+                                <div class="card-header mt-6">
+                                    <!--begin::Card title-->
+                                    <div class="card-title flex-column">
+                                        <h2 class="mb-1">User Location</h2>
+                                        <div class="fs-6 fw-semibold text-muted">Total <?=(isset($locationlist))?count($locationlist):'0'?> </div>
+                                    </div>
+                                    <!--end::Card title-->
+                                    <!--begin::Card toolbar-->
+                                    
+                                    <div class="card-toolbar">
 
+                                    
+                                        <button type="button" data-id="<?=$id?>" data-auth="<?=$auth?>" class="btn btn-primary btn-sm adminStaffProfileAddLocation">
+                                            <!--begin::Svg Icon | path: icons/duotune/files/fil005.svg-->
+                                            <span class="svg-icon svg-icon-2">
+                                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2"
+                                                        rx="1" transform="rotate(-90 11.364 20.364)"
+                                                        fill="currentColor"></rect>
+                                                    <rect x="4.36396" y="11.364" width="16" height="2" rx="1"
+                                                        fill="currentColor"></rect>
+                                                </svg>
+                                            </span>
+                                            <!--end::Svg Icon-->Add Location
+                                        </button>
+                                    </div>
+                                    <!--end::Card toolbar-->
+                                </div>
+                                <!--end::Card header-->
+                                <!--begin::Card body-->
+                                <div class="card-body d-flex flex-column">
+                                    <style>
+                                        .text-right{
+                                            margin-top: -40px;
+                                        }
+                                        </style>
+									<?php if($locationlist){
+										foreach($locationlist as $location){ ?>
+                                    <!--begin::Item-->
+                                    <div class=" position-relative mb-7">
+                                        <!--begin::Label-->
+                                        <div class="position-absolute top-0 start-0 rounded h-100 bg-secondary w-4px">
+                                        </div>
+                                        <!--end::Label-->
+                                        <!--begin::Details-->
+                                        <div class="fw-semibold ms-5">
+                                            <a href="#" class="fs-5 fw-bold text-dark text-hover-primary"><?=$location->lo_name?></a>
+                                           
+                                            <!--begin::Info-->
+                                            <div class="fs-7 text-muted"><?=date('d/m/Y',strtotime($location->sl_start_date))?> - <?=date('d/m/Y',strtotime($location->sl_end_date))?>
+                                                
+                                            </div>
+                                            <!--end::Info-->
+                                           
+                                            
+                                        </div>
+                                        <!--end::Details-->
+                                        <!--begin::Menu-->
+                                       
+                                            <!--begin::Svg Icon | path: icons/duotune/general/gen019.svg-->
+                                        <!--begin::Task menu-->
+                                        
+                                        <!--end::Task menu-->
+                                        <!--end::Menu-->
+                                        <div class="text-right">
+                                        <button type="button"
+                                            class="location_edit btn btn-light bnt-active-light-primary " data-locationid="<?=$location->stafflocation_id?>"
+                                            data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Edit</button>
+                                        </div> 
+                                    </div>
+                                    <!--end::Item-->
+									<?php } } ?>
+                                  
+                                </div>
+                                <!--end::Card body-->
+                            </div>
+                            <!--end::Location-->
                 </div>
                 <!--end::Sidebar-->
                 <!--begin::Content-->
+                
                 <div class="flex-lg-row-fluid ms-lg-15">
 
                     <!--begin:::Tab content-->
@@ -243,6 +326,7 @@
                                 <div class="card-header mt-6">
                                     <!--begin::Card title-->
                                     <div class="card-title flex-column">
+                                        
                                         <h2 class="mb-1">User Rating</h2>
                                         <div class="fs-6 fw-semibold text-muted">Rating Details</div>
                                           <!--begin::Table-->
@@ -283,7 +367,6 @@
                                 <!--end::Card header-->
                                 <!--begin::Card body-->
                                 <div class="card-body p-9 pt-4">
-                                   
                                     <!--begin::Tab Content-->
                                     <div class="tab-content">
                                        
@@ -420,6 +503,9 @@
                                 <!--end::Card body-->
                             </div>
                             <!--end::Tasks-->
+                             <!--begin::location-->
+                         
+                            
                         </div>
                         <!--end:::Tab pane-->
                         <!--begin:::Tab pane-->

@@ -187,6 +187,7 @@ if ($subcategory) {
                                                         class="form-control form-control-solid mb-3 mb-lg-0"
                                                         placeholder="Task End Date" value="" />
                                                     <!--end::Input-->
+                                                   
                                                 </div>
 
                                                 <!--end::Input group-->
@@ -198,7 +199,7 @@ if ($subcategory) {
                                                     <label class="required fw-semibold fs-6 mb-2">Task Start Date</label>
                                                     <!--end::Label-->
                                                     <!--begin::Input-->
-                                                    <input type="text" required name="task_date" id="task_date"
+                                                    <input type="text" required name="taskh_date" id="task_date"
                                                         class="form-control form-control-solid mb-3 mb-lg-0"
                                                         placeholder="Task Start Date"
                                                         value="<?=(isset($taskDetails) &&  $taskDetails->task_date!="" && $taskDetails->task_date!="1970-01-01") ? date('d-m-Y',strtotime($taskDetails->task_date)) : ''?>" />
@@ -214,11 +215,12 @@ if ($subcategory) {
                                                     <label class=" fw-semibold fs-6 mb-2">Task End Date</label>
                                                     <!--end::Label-->
                                                     <!--begin::Input-->
-                                                    <input type="text" name="task_end_date" id="task_end_date"
+                                                    <input type="text" name="taskh_end_date" id="task_end_date"
                                                         class="form-control form-control-solid mb-3 mb-lg-0"
                                                         placeholder="Task End Date"
                                                         value="<?=(isset($taskDetails) &&  $taskDetails->task_end_date!="" && $taskDetails->task_end_date!="1970-01-01") ? date('d-m-Y',strtotime($taskDetails->task_end_date)) : ''?>" />
                                                     <!--end::Input-->
+                                                    <span class="alert_date"></span>
                                                 </div>
 
                                                 <!--end::Input group-->

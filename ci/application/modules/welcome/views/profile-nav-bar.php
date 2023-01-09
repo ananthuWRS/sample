@@ -19,8 +19,8 @@
 														<div class="d-flex flex-column">
 															<!--begin::Name-->
 															<div class="d-flex align-items-center mb-2">
-																<a href="#" class="text-gray-900 text-hover-primary fs-2 fw-bold me-1 text-capital"><?= $this->userlogged_data->au_crickf.' '.$this->userlogged_data->au_crickl ?></a>
-																<a href="#">
+																<span class="text-gray-900 fs-2 fw-bold me-1 text-capital"><?= $this->userlogged_data->au_crickf.' '.$this->userlogged_data->au_crickl ?></span>
+																
 																	<!--begin::Svg Icon | path: icons/duotune/general/gen026.svg-->
 																	<span class="svg-icon svg-icon-1 svg-icon-primary">
 																		<svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
@@ -29,13 +29,13 @@
 																		</svg>
 																	</span>
 																	<!--end::Svg Icon-->
-																</a>
+																
 																
 															</div>
 															<!--end::Name-->
 															<!--begin::Info-->
 															<div class="d-flex flex-wrap fw-semibold fs-6 mb-4 pe-2">
-																<a href="#" class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2">
+																<span  href="#" class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2">
 																<!--begin::Svg Icon | path: icons/duotune/communication/com006.svg-->
 																<span class="svg-icon svg-icon-4 me-1">
 																	<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,8 +44,8 @@
 																		<rect x="7" y="6" width="4" height="4" rx="2" fill="currentColor" />
 																	</svg>
 																</span>
-																<!--end::Svg Icon--><?=$this->session->userdata('usertypename')?></a>
-																<a href="#" class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2">
+																<!--end::Svg Icon--><?=$this->session->userdata('usertypename')?></span>
+																<span href="#" class="d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2">
 																<!--begin::Svg Icon | path: icons/duotune/general/gen018.svg-->
 																<span class="svg-icon svg-icon-4 me-1">
 																	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,8 +53,8 @@
 																		<path d="M12.0624 13.0453C13.7193 13.0453 15.0624 11.7022 15.0624 10.0453C15.0624 8.38849 13.7193 7.04535 12.0624 7.04535C10.4056 7.04535 9.06241 8.38849 9.06241 10.0453C9.06241 11.7022 10.4056 13.0453 12.0624 13.0453Z" fill="currentColor" />
 																	</svg>
 																</span>
-																<!--end::Svg Icon--><?= $this->userlogged_data->au_cricka?></a>
-																<a href="#" class="d-flex align-items-center text-gray-400 text-hover-primary mb-2">
+																<!--end::Svg Icon--><?= $this->userlogged_data->au_cricka?></span>
+																<span class="d-flex align-items-center text-gray-400 text-hover-primary mb-2">
 																<!--begin::Svg Icon | path: icons/duotune/communication/com011.svg-->
 																<span class="svg-icon svg-icon-4 me-1">
 																	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -62,7 +62,7 @@
 																		<path d="M21 5H2.99999C2.69999 5 2.49999 5.10005 2.29999 5.30005L11.2 13.3C11.7 13.7 12.4 13.7 12.8 13.3L21.7 5.30005C21.5 5.10005 21.3 5 21 5Z" fill="currentColor" />
 																	</svg>
 																</span>
-																<!--end::Svg Icon--><?= $this->userlogged_data->au_cricke?></a>
+																<!--end::Svg Icon--><?= $this->userlogged_data->au_cricke?></span>
 															</div>
 															<!--end::Info-->
 														</div>

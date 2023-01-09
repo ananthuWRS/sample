@@ -20,7 +20,9 @@
             <link rel="shortcut icon" href="<?= base_url() ?>components/media/logos/fav_ico.png" />
             <!--begin::Fonts(mandatory for all pages)-->
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
-            <!--end::Fonts-->
+            <!--fontawesome-->
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.1/css/fontawesome.min.css" integrity="sha384-QYIZto+st3yW+o8+5OHfT6S482Zsvz2WfOzpFSXMF9zqeLcFV0/wlZpMtyFcZALm" crossorigin="anonymous">
+			<!--end::Fonts-->
             <!--begin::Vendor Stylesheets(used for this page only)-->
             <link href="<?= base_url() ?>components/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet"
                 type="text/css" />
@@ -32,6 +34,8 @@
                 type="text/css" />
             <link href="<?= base_url() ?>components/css/style.bundle.css" rel="stylesheet" type="text/css" />
             <link href="<?= base_url() ?>components/css/ahead-custom.css" rel="stylesheet" type="text/css" />
+            <link href="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/style.css" rel="stylesheet" />
+            ﻿<script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
             
             <!--end::Global Stylesheets Bundle-->
             <?php

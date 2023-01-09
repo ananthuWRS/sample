@@ -63,6 +63,20 @@ class Tasks extends My_Model
                 $this->db->where('e.tsa_approved','2');
             }
         }
+		
+		if (isset($_POST['startdate']) && isset($_POST['enddate'])) {
+			 
+			 $this->db->where('a.task_date >=', date('Y-m-d', strtotime($_POST['startdate'])));
+			  $this->db->where('a.task_end_date <=', date('Y-m-d', strtotime($_POST['enddate'])));
+		 }
+		 if (isset($_POST['status']) && $_POST['status'] != 'null') {
+			 
+			 $this->db->where('a.task_status',$_POST['status']);
+		 }
+		  if (isset($_POST['priority']) && $_POST['priority'] != 'null') {
+			 
+			 $this->db->where('a.task_priority',$_POST['priority']);
+		 }
 
         $this->db->where('a.task_active', '0');
 
@@ -359,7 +373,7 @@ class Tasks extends My_Model
         $this->db->from('ah_user_rating a');
         $this->db->join('ah_rating_option b','b.rating_option_id=a.rating','inner');
         $this->db->where('a.staff_id',$this->input->post('id'));
-        if($this->session->userdata('usertype')!=1){
+        if($this->session->userdata('usertype')!=1 && $this->session->userdata('authenticationid') != $this->input->post('id') ){
 
             $this->db->where('a.reporting_staff_id',$this->session->userdata('authenticationid'));
         }
@@ -459,6 +473,43 @@ public function get_ratebyid($id)
     return $query->row();
 }
 
+public function count_all_task($type)
+    {
+       
+            $this->db->select('a.*');
+        
+        $this->db->from('ah_tasks a');
+		
+		if ($this->session->userdata('usertype')==2 || $this->session->userdata('usertype')=='3') {
+			 $this->db->join('ah_task_staff e', 'e.tsa_taskid=a.taskid', 'inner');   
+            $this->db->where('e.tsa_staffid', $this->session->userdata('authenticationid'));
+             if($type=='1'){
+            $this->db->where('e.tsa_completed_status !=','2');
+            }elseif($type=='2'){
+                $this->db->where('e.tsa_completed_status','2');
+                $this->db->where('e.tsa_approved !=','2');
+
+            }elseif($type=='3'){
+                $this->db->where('e.tsa_completed_status','2');
+                $this->db->where('e.tsa_approved','2');
+            }
+        }
+       else{
+            if($type=='1'){
+                $this->db->where('a.task_priority','urgent');
+            }elseif($type=='2'){
+                $this->db->where('a.task_priority','normal');
+                
+            }elseif($type=='3'){
+                $this->db->where('a.task_priority','low');
+               
+            }
+			
+	   }
+        
+        $this->db->where('a.task_active', '0');
+        return $this->db->count_all_results();
+    }
 
 
 

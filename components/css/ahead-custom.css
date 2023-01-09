@@ -206,8 +206,9 @@ font-size: 30px;
 
 
     }
-    #header_timer{
-        margin-right: 100px;
+    #header_timer .timerconatiner{
+		min-width: 140px;
+		width: 155px;
     }
 
 
@@ -218,5 +219,49 @@ font-size: 30px;
 .pad-right{
 	padding-right: 0px !important;
 }
+#header_timer .cloclSpan::after{
+content: attr(data-content);
+}
 
+#header_timer button{
+border:none;
+background-color: #b20f55;
+}
+#header_timer button i{
+	padding: 5px;
+	font-size: larger;
+	color: white;
+}
     
+
+#header_timer .timerDisplay {
+
+	width: 250px;
+	min-width: 150px;
+	font-size: 20px;
+	
+}
+
+#header_timer .buttons {
+	width: 90%;
+	display: flex;
+	justify-content: flex-start;
+	gap: 10px;
+}
+
+#header_timer .button button {
+	width: 120px;
+	height: 45px;
+	background-color: #d23332;
+	color: #ffffff;
+	border: none;
+	font-family: 'Poppins', sans-serif;
+	font-size: 18px;
+	border-radius: 5px;
+	cursor: pointer;
+	outline: none;
+
+}
+
+
+

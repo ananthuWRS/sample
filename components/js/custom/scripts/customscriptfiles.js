@@ -115,7 +115,7 @@ function taskCategory() {
 		swal
 			.fire({
 				title: "Are you sure?",
-				text: "you wish to change this item status?",
+				text: "You wish to delete this item?",
 				icon: "info",
 				buttonsStyling: false,
 				showCancelButton: true,
@@ -392,7 +392,7 @@ function taskCampus() {
 		swal
 			.fire({
 				title: "Are you sure?",
-				text: "you wish to change this item status?",
+				text: "You wish to delete this item ?",
 				icon: "info",
 				buttonsStyling: false,
 				showCancelButton: true,
@@ -567,7 +567,7 @@ function staff_userlist() {
 }
 
 
-	
+
 
 function taskProgram() {
 	var save_method;
@@ -1843,22 +1843,53 @@ function staffedittask() {
 			$("#submitTask").removeAttr("data-kt-indicator");
 			$("#submitTask").attr("disabled", false);
 		}
-	});
 
-	$("#task_execution_date").flatpickr({
-		// minDate: "today",
-		dateFormat: "d-m-Y",
 	});
-	$("#task_date").flatpickr({
-		// minDate: "today",
-		dateFormat: "d-m-Y",
-	});
-	$("#task_end_date").flatpickr({
-		// minDate: "today",
-		dateFormat: "d-m-Y",
-	});
+	startPicker = flatpickr("#task_date", {
+		onReady: function (selectedDates, dateStr, instance) {
 
-	$(".addTaskExecutionDetails").hide();
+			endPicker = flatpickr("#task_end_date", {
+				minDate: selectedDates[0],
+				dateFormat: "d-m-Y",
+			});
+		},
+		onChange: function (selectedDates, dateStr, instance) {
+			endPicker = flatpickr("#task_end_date", {
+				minDate: selectedDates[0],
+				dateFormat: "d-m-Y",
+			});
+		},
+
+		minDate: "today",
+		dateFormat: "d-m-Y",
+	});
+	
+// $("#task_execution_date").flatpickr({
+	// 	// minDate: "today",
+	// 	dateFormat: "d-m-Y",
+	// });
+	// $("#task_date").flatpickr({
+	// 	// minDate: "today",
+	// 	dateFormat: "d-m-Y",
+
+	// });
+	// $("#task_end_date").flatpickr({
+	// 	// minDate: "today",
+	// 	dateFormat: "d-m-Y",
+
+	// });
+	// $("#task_end_date").change(function() {
+	// 	var startDate = document.getElementById("task_date").value;
+	// 	var endDate = document.getElementById("task_end_date").value;
+		
+	// 	if (Date.parse(startDate)  >= Date.parse(endDate)) {
+
+			
+	// 	  alert("End date should be greater than Start date");
+		 
+	// 	}
+	//   });
+	 $(".addTaskExecutionDetails").hide();
 	$("#task_status").on("keyup change", function () {
 		var status = $(this).val();
 		if ($(this).val() > 100) {
@@ -2291,15 +2322,24 @@ function adminaddtask() {
 		}
 	});
 
-	$("#task_date").flatpickr({
-		// minDate: "today",
-		dateFormat: "d-m-Y",
-	});
-	$("#task_end_date").flatpickr({
-		// minDate: "today",
-		dateFormat: "d-m-Y",
-	});
+	startPicker = flatpickr("#task_date", {
+		onReady: function (selectedDates, dateStr, instance) {
 
+			endPicker = flatpickr("#task_end_date", {
+				minDate: selectedDates[0],
+				dateFormat: "d-m-Y",
+			});
+		},
+		onChange: function (selectedDates, dateStr, instance) {
+			endPicker = flatpickr("#task_end_date", {
+				minDate: selectedDates[0],
+				dateFormat: "d-m-Y",
+			});
+		},
+
+		minDate: "today",
+		dateFormat: "d-m-Y",
+	});
 	$(document).on("click", ".assign_type", function () {
 		var assign_type = $('input[name="assign_type"]:checked').val();
 		if (assign_type == "1") {
@@ -2315,6 +2355,11 @@ function adminaddtask() {
 	});
 
 }
+
+
+
+
+
 function newstaff() {
 	$(document).on("click", "#submitStaff", function () {
 		$("#addStaffForm").parsley({
@@ -2354,24 +2399,24 @@ function newstaff() {
 
 	startPicker = flatpickr("#work_date", {
 		onReady: function (selectedDates, dateStr, instance) {
-			
+
 			endPicker = flatpickr("#work_end_date", {
 				minDate: selectedDates[0],
 				dateFormat: "d-m-Y",
 			});
 		},
 		onChange: function (selectedDates, dateStr, instance) {
-			
+
 			endPicker = flatpickr("#work_end_date", {
 				minDate: selectedDates[0],
 				dateFormat: "d-m-Y",
 			});
 		},
-		
+
 		minDate: "today",
 		dateFormat: "d-m-Y",
 	});
-	
+
 }
 function editstaff() {
 	var needpassword = new Object();
@@ -2413,25 +2458,25 @@ function editstaff() {
 
 	startPicker = flatpickr("#work_date", {
 		onReady: function (selectedDates, dateStr, instance) {
-			
+
 			endPicker = flatpickr("#work_end_date", {
 				minDate: selectedDates[0],
 				dateFormat: "d-m-Y",
 			});
 		},
 		onChange: function (selectedDates, dateStr, instance) {
-			
+
 			endPicker = flatpickr("#work_end_date", {
 				minDate: selectedDates[0],
 				dateFormat: "d-m-Y",
 			});
 		},
-		
+
 
 		minDate: "today",
 		dateFormat: "d-m-Y",
 	});
-	
+
 
 	if ($('#flexSwitchCheckChecked').is(':checked')) {
 		$('.passwordfields').show();
@@ -2595,12 +2640,15 @@ function viewassignedlist() {
 		}
 	});
 	$(document).on("click", ".rejectTaskStatus", function () {
+		
+     var editid = $('#viewtaskid').val();
 		$.ajax({
 			dataType: "html",
 			type: "POST",
 			url: base_url + "staff/approveAllTaskStatus",
 			data: {
 				pagename: "rejectTaskStatus",
+				editid: editid,
 			},
 			success: function (data) {
 				$(".commonmodal").remove();
@@ -2617,6 +2665,9 @@ function viewassignedlist() {
 		$("#kt_form_reject_task_submit").attr("disabled", true);
 		$("#kt_modal_add_task_form").parsley().validate();
 		if ($("#kt_modal_add_task_form").parsley().isValid()) {
+			const task_comments = $("#task_comments").val();
+			const task_name = $("#task_name").val();
+			const editid = $("#editid").val();
 			const checkedList = [];
 			$("input[name='allusers[]']:checked").each(function () {
 				var ischecked = $(this).is(":checked");
@@ -2628,7 +2679,9 @@ function viewassignedlist() {
 				type: "POST",
 				enctype: "multipart/form-data",
 				url: base_url + "staff/rejectAllTaskProcess",
-				data: { checkedList: checkedList },
+				data: { checkedList: checkedList,task_comments: task_comments,task_name: task_name,editid: editid
+				         
+				        },
 				cache: false,
 				timeout: 600000,
 				success: function (data) {
@@ -2740,6 +2793,168 @@ function viewstaff() {
 	$("#task_end_date").flatpickr({
 		// minDate: "today",
 		dateFormat: "d-m-Y",
+	});
+}
+function addlocation() {
+
+	$(document).on("click", ".adminStaffProfileAddLocation", function () {
+
+
+		$.ajax({
+			dataType: "html",
+			type: "POST",
+			url: base_url + "admin/adminStaffProfileAddLocation",
+			data: {
+				pagename: "adminStaffAddLocation",
+				staffid: $(this).data('id'),
+
+			},
+			success: function (data) {
+				$(".commonmodal").remove();
+				$(document.body).append(data);
+				$("addTasklocation").parsley();
+				$(".form-select").select2();
+				startPicker = flatpickr("#location_date", {
+					onReady: function (selectedDates, dateStr, instance) {
+			
+						endPicker = flatpickr("#location_end_date", {
+							minDate: selectedDates[0],
+							dateFormat: "d-m-Y",
+						});
+					},
+					onChange: function (selectedDates, dateStr, instance) {
+			
+						endPicker = flatpickr("#location_end_date", {
+							minDate: selectedDates[0],
+							dateFormat: "d-m-Y",
+						});
+					},
+			
+					minDate: "today",
+					dateFormat: "d-m-Y",
+				});
+				$(".commonmodal").modal("show");
+			},
+		});
+		$(document).on("click", "#submitlocation", function () {
+			$("#addTaskForm").parsley({
+				excluded:
+					"input[type=button], input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden",
+			});
+
+			$("#submitlocation").attr("data-kt-indicator", "on");
+			$("#submitlocation").attr("disabled", true);
+			$("#addTasklocation").parsley().validate();
+			if ($("#addTasklocation").parsley().isValid()) {
+				$.ajax({
+					type: "POST",
+					enctype: "multipart/form-data",
+					url: base_url + "admin/location_submit",
+					data: $("#addTasklocation").serialize() ,
+
+					cache: false,
+					timeout: 600000,
+					success: function (data) {
+						var e = JSON.parse(data);
+						if (e.status == "Yes") {
+							$(".commonmodal").modal("hide");
+							$(".commonmodal").remove();
+							//table.ajax.reload();
+							window.location.reload();
+						} else {
+							$("#submitlocation").removeAttr("data-kt-indicator");
+							$("#submitlocation").attr("disabled", false);
+							swal.fire("Sorry", e.Message, "error");
+						}
+					},
+				});
+			} else {
+				$("#submitlocation").removeAttr("data-kt-indicator");
+				$("#submitlocation").attr("disabled", false);
+			}
+		});
+		
+
+	});
+	$(document).on("click", ".location_edit", function () {
+		var editid = $(this).data("locationid");
+		$.ajax({
+			dataType: "html",
+			type: "POST",
+			url: base_url + "admin/Edit_location",
+			data: {
+				pagename: "EditLocation",
+				editid: editid,
+			},
+			success: function (data) {
+			
+				console.log (data);
+				$(".commonmodal").remove();
+				$(document.body).append(data);
+				$("editTasklocation").parsley();
+				$(".form-select").select2();
+				startPicker = flatpickr("#location_date", {
+					onReady: function (selectedDates, dateStr, instance) {
+			
+						endPicker = flatpickr("#location_end_date", {
+							minDate: selectedDates[0],
+							dateFormat: "d-m-Y",
+						});
+					},
+					onChange: function (selectedDates, dateStr, instance) {
+			
+						endPicker = flatpickr("#location_end_date", {
+							minDate: selectedDates[0],
+							dateFormat: "d-m-Y",
+						});
+					},
+			
+					minDate: "today",
+					dateFormat: "d-m-Y",
+				});
+				$(".commonmodal").modal("show");
+
+			},
+		});
+	
+
+	});
+	$(document).on("click", "#edit_location", function () {
+		$("#editTasklocation").parsley({
+			excluded:
+				"input[type=button], input[type=submit], input[type=reset], input[type=hidden], [disabled], :hidden",
+		});
+
+		$("#submitlocation").attr("data-kt-indicator", "on");
+		$("#submitlocation").attr("disabled", true);
+		$("#editTasklocation").parsley().validate();
+		if ($("#editTasklocation").parsley().isValid()) {
+			$.ajax({
+				type: "POST",
+				enctype: "multipart/form-data",
+				url: base_url + "admin/locationedit_submit",
+				data: $("#editTasklocation").serialize(),
+
+				cache: false,
+				timeout: 600000,
+				success: function (data) {
+					var e = JSON.parse(data);
+					if (e.status == "Yes") {
+						$(".commonmodal").modal("hide");
+						$(".commonmodal").remove();
+						//table.ajax.reload();
+						window.location.reload();
+					} else {
+						$("#submitlocation").removeAttr("data-kt-indicator");
+						$("#submitlocation").attr("disabled", false);
+						swal.fire("Sorry", e.Message, "error");
+					}
+				},
+			});
+		} else {
+			$("#submitlocation").removeAttr("data-kt-indicator");
+			$("#submitlocation").attr("disabled", false);
+		}
 	});
 }
 function viewtaskdetails() {
@@ -3146,8 +3361,8 @@ function reportingaddtask() {
 		// minDate: "today",
 		dateFormat: "d-m-Y",
 	});
-	
-	
+
+
 	$(document).on("click", ".assign_type", function () {
 		var assign_type = $('input[name="assign_type"]:checked').val();
 		if (assign_type == "1") {
@@ -3164,7 +3379,7 @@ function reportingaddtask() {
 
 
 }
-function reportingstafftasksfinished() {
+function reportingstafftasksfinished() {	
 	var save_method;
 	var table;
 	table = $("#kt_table_users").DataTable({
@@ -3227,6 +3442,7 @@ function reportingstafftasksfinished() {
 			url: base_url + "staff/approveAllTaskStatus",
 			data: {
 				pagename: "approveTaskStatus",
+				taskdata :"$taskdata",
 			},
 			success: function (data) {
 				$(".commonmodal").remove();
@@ -3236,16 +3452,16 @@ function reportingstafftasksfinished() {
 
 			},
 		});
+		
 	});
 
 	$(document).on("click", "#kt_form_approve_task_submit", function () {
+		
 		$("#kt_form_approve_task_submit").attr("data-kt-indicator", "on");
 		$("#kt_form_approve_task_submit").attr("disabled", true);
 		$("#kt_modal_add_task_form").parsley().validate();
 		if ($("#kt_modal_add_task_form").parsley().isValid()) {
-
-
-
+			var task_comments= $('#task_comments').val();	
 			const checkedList = [];
 			$("input[name='allusers[]']:checked").each(function () {
 				var ischecked = $(this).is(":checked");
@@ -3253,12 +3469,14 @@ function reportingstafftasksfinished() {
 					checkedList.push($(this).val());
 				}
 			});
-
+			
 			$.ajax({
 				type: "POST",
 				enctype: "multipart/form-data",
 				url: base_url + "staff/approveAllTaskProcess",
-				data: { checkedList: checkedList },
+				data: { checkedList: checkedList,
+					task_comments:task_comments
+				},
 				cache: false,
 				timeout: 600000,
 				success: function (data) {
@@ -3296,10 +3514,12 @@ function reportingstafftasksfinished() {
 	});
 
 	$(document).on("click", "#kt_form_reject_task_submit", function () {
+		
 		$("#kt_form_reject_task_submit").attr("data-kt-indicator", "on");
 		$("#kt_form_reject_task_submit").attr("disabled", true);
 		$("#kt_modal_add_task_form").parsley().validate();
 		if ($("#kt_modal_add_task_form").parsley().isValid()) {
+			var task_comments= $('#task_comments').val();
 			const checkedList = [];
 			$("input[name='allusers[]']:checked").each(function () {
 				var ischecked = $(this).is(":checked");
@@ -3311,7 +3531,9 @@ function reportingstafftasksfinished() {
 				type: "POST",
 				enctype: "multipart/form-data",
 				url: base_url + "staff/rejectAllTaskProcess",
-				data: { checkedList: checkedList },
+				data: { checkedList: checkedList,
+					task_comments:task_comments
+				},
 				cache: false,
 				timeout: 600000,
 				success: function (data) {
@@ -3729,6 +3951,7 @@ function taskdesignation() {
 
 $(document).on("click", ".addratingpopup", function () {
 	$editid = $(this).data("item");
+
 	$.ajax({
 		dataType: "html",
 		type: "POST",
@@ -3740,233 +3963,30 @@ $(document).on("click", ".addratingpopup", function () {
 		success: function (data) {
 			$(".commonmodal").remove();
 			$(document.body).append(data);
-			
+
 			$(".commonmodal").modal("show");
 			$("#rating_date").flatpickr({
 				// minDate: "today",
-				dateFormat: "d-m-Y",
+				//dateFormat: "d-m-Y",
+				plugins: [
+					new monthSelectPlugin({
+						shorthand: true,
+						dateFormat: "F Y",
+						altFormat: "F Y",
+						theme: "light"
+					}),
+				]
+
 			});
-			
+
 		},
 	});
-	
+
 });
-$(document).ready(function() {
 
-    (function($){
-    
-        $.extend({
-            
-            APP : {                
-                
-                formatTimer : function(a) {
-                    if (a < 10) {
-                        a = '0' + a;
-                    }                              
-                    return a;
-                },    
-                
-                startTimer : function(dir) {
-                    
-                    var a;
-                    
-                    // save type
-                    $.APP.dir = dir;
-                    
-                    // get current date
-                    $.APP.d1 = new Date();
-                    
-  
-                    
-                    switch($.APP.state) {
-                            
-                        case 'pause' :
-                            
-                            // resume timer
-                            // get current timestamp (for calculations) and
-                            // substract time difference between pause and now
-                            $.APP.t1 = $.APP.d1.getTime() - $.APP.td;                            
-                            
-                        break;
-                            
-                        default :
-                            
-                            // get current timestamp (for calculations)
-                            $.APP.t1 = $.APP.d1.getTime(); 
-                            
-                            // if countdown add ms based on seconds in textfield
-                            if ($.APP.dir === 'cd') {
-                                $.APP.t1 += parseInt($('#cd_seconds').val())*1000;
-                            }    
-                        
-                        break;
-                            
-                    }                                   
-                    
-                    // reset state
-                    $.APP.state = 'alive';   
-                    $('#' + $.APP.dir + '_status').html('Running');
-                    
-                    // start loop
-                    $.APP.loopTimer();
-                    
-                },
-                
-                pauseTimer : function() {
-                    
-                    // save timestamp of pause
-                    $.APP.dp = new Date();
-                    $.APP.tp = $.APP.dp.getTime();
-                    
-                    // save elapsed time (until pause)
-                    $.APP.td = $.APP.tp - $.APP.t1;
-                    
-                    // change button value
-                    $('#' + $.APP.dir + '_start').val('Resume');
-                    
-                    // set state
-                    $.APP.state = 'pause';
-                    $('#' + $.APP.dir + '_status').html('Paused');
-                    
-                },
-                
-                // stopTimer : function() {
-                    
-                //     // change button value
-                //     $('#' + $.APP.dir + '_start').val('Restart');                    
-                    
-                //     // set state
-                //     $.APP.state = 'stop';
-                //     $('#' + $.APP.dir + '_status').html('Stopped');
-                    
-                // },
-                
-                // resetTimer : function() {
+function task_rating(rid) {
 
-                //     // reset display
-                //     $('#' + $.APP.dir + '_ms,#' + $.APP.dir + '_s,#' + $.APP.dir + '_m,#' + $.APP.dir + '_h').html('00');                 
-                    
-                //     // change button value
-                //     $('#' + $.APP.dir + '_start').val('Start');                    
-                    
-                //     // set state
-                //     $.APP.state = 'reset';  
-                //     $('#' + $.APP.dir + '_status').html('Reset & Idle again');
-                    
-                // },
-                
-                // endTimer : function(callback) {
-                   
-                //     // change button value
-                //     $('#' + $.APP.dir + '_start').val('Restart');
-                    
-                //     // set state
-                //     $.APP.state = 'end';
-                    
-                //     // invoke callback
-                //     if (typeof callback === 'function') {
-                //         callback();
-                //     }    
-                    
-                // },    
-                
-                loopTimer : function() {
-                    
-                    var td;
-                    var d2,t2;
-                    
-                    var ms = 0;
-                    var s  = 0;
-                    var m  = 0;
-                    var h  = 0;
-                    
-                    if ($.APP.state === 'alive') {
-                                
-                        // get current date and convert it into 
-                        // timestamp for calculations
-                        d2 = new Date();
-                        t2 = d2.getTime();   
-                        
-                        // calculate time difference between
-                        // initial and current timestamp
-                        if ($.APP.dir === 'sw') {
-                            td = t2 - $.APP.t1;
-                        // reversed if countdown
-                        } else {
-                            td = $.APP.t1 - t2;
-                            // if (td <= 0) {
-                            //     // if time difference is 0 end countdown
-                            //     $.APP.endTimer(function(){
-                            //         $.APP.resetTimer();
-                            //         $('#' + $.APP.dir + '_status').html('Ended & Reset');
-                            //     });
-                            // }    
-                        }    
-                        
-                        // calculate milliseconds
-                        ms = td%1000;
-                        if (ms < 1) {
-                            ms = 0;
-                        } else {    
-                            // calculate seconds
-                            s = (td-ms)/1000;
-                            if (s < 1) {
-                                s = 0;
-                            } else {
-                                // calculate minutes   
-                                var m = (s-(s%60))/60;
-                                if (m < 1) {
-                                    m = 0;
-                                } else {
-                                    // calculate hours
-                                    var h = (m-(m%60))/60;
-                                    if (h < 1) {
-                                        h = 0;
-                                    }                             
-                                }    
-                            }
-                        }
-                      
-                        // substract elapsed minutes & hours
-                        ms = Math.round(ms/100);
-                        s  = s-(m*60);
-                        m  = m-(h*60);                                
-                        
-                        // update display
-                        $('#' + $.APP.dir + '_ms').html($.APP.formatTimer(ms));
-                        $('#' + $.APP.dir + '_s').html($.APP.formatTimer(s));
-                        $('#' + $.APP.dir + '_m').html($.APP.formatTimer(m));
-                        $('#' + $.APP.dir + '_h').html($.APP.formatTimer(h));
-                        
-                        // loop
-                        $.APP.t = setTimeout($.APP.loopTimer,1);
-                    
-                    } else {
-                    
-                        // kill loop
-                        clearTimeout($.APP.t);
-                        return true;
-                    
-                    }  
-                    
-                }
-                    
-            }    
-        
-        });
-          
-        $(document).ready(function(){
-            $.APP.startTimer('sw');
-        });    
-
-        
-                
-    })(jQuery);
-        
-});
-function task_rating(rid){
-
-var save_method;
+	var save_method;
 	var table;
 	table = $("#kt_usersrating").DataTable({
 		destroy: true,
@@ -3978,7 +3998,7 @@ var save_method;
 			type: "POST",
 			data: function (data) {
 				//data.search.value = $(".search-in-table").val();
-				data.id = rid;				
+				data.id = rid;
 			},
 		},
 		language: {
@@ -4009,40 +4029,58 @@ var save_method;
 		table.ajax.reload();
 	});
 	$(document).on("click", "#rating_submit", function () {
+		$("#rating_date").blur();
 		$("#kt_modal_add_category_form").parsley({
 			excluded:
 				"input[type=button], input[type=submit], input[type=reset]",
-		});	
+		});
 		$("#rating_submit").attr("data-kt-indicator", "on");
 		$("#rating_submit").attr("disabled", true);
 		$("#kt_modal_add_category_form").parsley().validate();
 		if ($("#kt_modal_add_category_form").parsley().isValid()) {
-			$.ajax({
-				type: "POST",
-				enctype: "multipart/form-data",
-				url: base_url + "staff/rating_submit",
-				data: $("#kt_modal_add_category_form").serialize(),
-				cache: false,
-				timeout: 600000,
-				success: function (data) {
-					console.log (data);
-					var e = JSON.parse(data);
-					if (e.status == "Yes") {
-						$(".commonmodal").modal("hide");
-						$(".commonmodal").remove();
-						table.ajax.reload();
-					} else {
-						$("#rating_submit").removeAttr("data-kt-indicator");
-						$("#rating_submit").attr("disabled", false);
-						swal.fire("Sorry", e.Message, "error");
-					}
-				},
+
+			var formdata = $("#kt_modal_add_category_form").serialize();
+			swal.fire({
+				title: "Are you sure?",
+				text: "You will not able to change Rating So please verify and move forward",
+				type: "warning",
+				stopKeydownPropagation: false,
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Save',
+			}).then((result) => {
+				if (result.isConfirmed) {
+					$.ajax({
+						type: "POST",
+						enctype: "multipart/form-data",
+						url: base_url + "staff/rating_submit",
+						data: formdata,
+						cache: false,
+						timeout: 600000,
+						success: function (data) {
+							console.log(data);
+							var e = JSON.parse(data);
+							if (e.status == "Yes") {
+								$(".commonmodal").modal("hide");
+								$(".commonmodal").remove();
+								window.location.reload();
+							} else {
+								$("#rating_submit").removeAttr("data-kt-indicator");
+								$("#rating_submit").attr("disabled", false);
+								swal.fire("Sorry", e.Message, "error");
+							}
+
+						},
+					});
+				}
 			});
+
 		} else {
 			$("#rating_submit").removeAttr("data-kt-indicator");
 			$("#rating_submit").attr("disabled", false);
 		}
-		
+
 	});
 	$(document).on("click", ".rate_edit", function () {
 		$editid = $(this).data("item");
@@ -4061,19 +4099,27 @@ var save_method;
 				$(".commonmodal").modal("show");
 				$("#rating_date").flatpickr({
 					// minDate: "today",
-					dateFormat: "d-m-Y",
+					//dateFormat: "d-m-Y",
+					plugins: [
+						new monthSelectPlugin({
+							shorthand: true,
+							dateFormat: "F Y",
+							altFormat: "F Y",
+							theme: "light"
+						}),
+					]
 				});
-				
+
 			},
 		});
-		
-	
+
+
 	});
 	$(document).on("click", "#rating_edit", function () {
 		$("#kt_modal_add_category_form").parsley({
 			excluded:
 				"input[type=button], input[type=submit], input[type=reset]",
-		});	
+		});
 		$("#rating_edit").attr("data-kt-indicator", "on");
 		$("#rating_edit").attr("disabled", true);
 		$("#kt_modal_add_category_form").parsley().validate();
@@ -4086,7 +4132,7 @@ var save_method;
 				cache: false,
 				timeout: 600000,
 				success: function (data) {
-					console.log (data);
+					console.log(data);
 					var e = JSON.parse(data);
 					if (e.status == "Yes") {
 						$(".commonmodal").modal("hide");
@@ -4103,12 +4149,12 @@ var save_method;
 			$("#rating_edit").removeAttr("data-kt-indicator");
 			$("#rating_edit").attr("disabled", false);
 		}
-		
+
 	});
-	
 
 
-	}
+
+}
 
 (function ($) {
 	"use strict";

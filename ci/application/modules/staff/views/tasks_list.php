@@ -1,3 +1,10 @@
+<style>
+.fa-exp{
+	 font-size: .6em !important;
+    position: relative;
+    top: -15px;
+}
+</style>
 <!--begin::Content wrapper-->
 <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
 						<!--begin::Content wrapper-->
@@ -24,7 +31,7 @@
 											</li>
 											<!--end::Item-->
 											<!--begin::Item-->
-											<li class="breadcrumb-item text-muted">Task Management</li>
+											<li class="breadcrumb-item text-muted">My Tasks</li>
 											<!--end::Item-->
 											<!--begin::Item-->
 											<li class="breadcrumb-item">
@@ -110,11 +117,11 @@
 													<tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
 														<th class="w-10px pe-2">#</th>
 														<th class="min-w-125px">Task Name</th>
-														<th class="min-w-125px">Category</th>
+														<!--<th class="min-w-125px">Category</th>-->
 														<!-- <th class="min-w-125px">Sub Category</th>  -->
 														<!-- <th class="min-w-125px">Status</th> -->
-														<th class="min-w-50px">Priority</th> 
-														<th class="min-w-50px">Completed % </th> 
+														<th class="min-w-100px">Time Spent</th>
+														<th class="min-w-50px">Status</th> 
 														<!-- <th class="min-w-125px no-sort sorting_disabled">comments </th>  -->
 														<th class="text-center  no-sort sorting_disabled" style="width:320px !important;">Actions</th>
 													</tr>

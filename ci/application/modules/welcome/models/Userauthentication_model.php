@@ -983,12 +983,31 @@ au_emailverification,au_crickp,au_emp_number,au_title,au_designation,au_campus,a
 
 	private function _get_datatables_query()
 	{
-		$this->db->select('CAST(AES_DECRYPT(c.au_crickf, "' . EncriptKey . '") AS CHAR) AS orderbyfirstname,AES_DECRYPT(c.au_crickf,"' . EncriptKey . '") as au_crickf,AES_DECRYPT(c.au_crickl,"' . EncriptKey . '") as au_crickl,AES_DECRYPT(c.au_cricke,"' . EncriptKey . '") as au_cricke,AES_DECRYPT(c.au_cricka,"' . EncriptKey . '") as au_cricka,c.au_title,c.au_emp_number,c.au_usertype,c.au_gender,c.au_deptarment,c.au_school,c.au_campus,c.au_designation,c.au_status,a.ut_name,c.authenticationid');
+		$this->db->select('CAST(AES_DECRYPT(c.au_crickf, "' . EncriptKey . '") AS CHAR) AS orderbyfirstname,AES_DECRYPT(c.au_crickf,"' . EncriptKey . '") as au_crickf,AES_DECRYPT(c.au_crickl,"' . EncriptKey . '") as au_crickl,AES_DECRYPT(c.au_cricke,"' . EncriptKey . '") as au_cricke,AES_DECRYPT(c.au_cricka,"' . EncriptKey . '") as au_cricka,c.au_title,c.au_emp_number,c.au_usertype,c.au_gender,c.au_deptarment,c.au_school,c.au_campus,c.au_designation,c.au_status,a.ut_name,c.authenticationid,l.rating_option_title,sd.designation_name');
 		$this->db->from('ck_authentication c');
 		$this->db->join('ck_usertype a', 'c.au_usertype=a.usertypeid', 'inner');
-		// $this->db->join('ah_staff_reporting_conn b','c.authenticationid=b.rp_staffid','left');
+		$this->db->join('ah_rating_option l','l.rating_option_id=(select r.rating from  ah_user_rating r inner join ah_rating_option o on  r.rating=o.rating_option_id where r.staff_id=c.authenticationid   ORDER BY r.rating_date DESC LIMIT 1)','left');   
+         // $this->db->join('ah_staff_reporting_conn b','c.authenticationid=b.rp_staffid','left');
 		// $this->db->join('ck_authentication d','d.authenticationid=b.rp_reportingperson','left');
+		$this->db->join('ah_designation sd','sd.designation_id =c.au_designation','left');
 		$this->db->where('c.au_usertype !=', '1');
+		
+		 if (isset($_POST['department']) && $_POST['department'] != 'null') {
+			 
+			 $this->db->where('c.au_deptarment',$_POST['department']);
+		 }
+		 if (isset($_POST['school']) && $_POST['school'] != 'null') {
+			 
+			 $this->db->where('c.au_school',$_POST['school']);
+		 }
+		 if (isset($_POST['usertype']) && $_POST['usertype'] != 'null') {
+			 
+			 $this->db->where('c.au_usertype',$_POST['usertype']);
+		 }
+		 if (isset($_POST['designation']) && $_POST['designation'] != 'null') {
+			 
+			 $this->db->where('c.au_designation',$_POST['designation']);
+		 }
 
 		$i = 0;
 
@@ -1143,6 +1162,25 @@ au_emailverification,au_crickp,au_emp_number,au_title,au_designation,au_campus,a
         $query = $this->db->get();
         return $query->num_rows();
     }
+	
+	 public function login_users($time)
+    {
+		$dates = date('d-m-Y',strtotime($time));
+        $day = date('d',strtotime($dates));
+        $month = date('m',strtotime($dates));
+        $year = date('Y');
+		
+        $this->db->select('DISTINCT CAST(AES_DECRYPT(c.au_crickf, "' . EncriptKey . '") AS CHAR) AS orderbyfirstname,AES_DECRYPT(c.au_crickf,"' . EncriptKey . '") as au_crickf,AES_DECRYPT(c.au_crickl,"' . EncriptKey . '") as au_crickl,AES_DECRYPT(c.au_cricke,"' . EncriptKey . '") as au_cricke,AES_DECRYPT(c.au_cricka,"' . EncriptKey . '") as au_cricka,c.au_title');
+        $this->db->from('ck_authentication c');
+        $this->db->join('ah_usertime a','c.authenticationid =a.ut_staff_id','inner');
+         $this->db->where("MONTH(a.ut_login_time)", $month);
+         $this->db->where("DAY(a.ut_login_time)" , $day);
+        $this->db->where("YEAR(a.ut_login_time)" , $year);
+        $query = $this->db->get();
+         
+        return $query->result();
+    }
+
     }
 
     

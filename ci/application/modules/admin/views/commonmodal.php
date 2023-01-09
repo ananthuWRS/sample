@@ -11,7 +11,7 @@ switch($modalname) {
             <!--begin::Modal header-->
             <div class="modal-header" id="kt_modal_add_user_header">
                 <!--begin::Modal title-->
-                <h2 class="fw-bold">Add Category</h2>
+                <h2 class="fw-bold"> <?=( isset($categoryedit))?$categoryedit:'Add category'; ?>      </h2>
                 <!--end::Modal title-->
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
@@ -889,7 +889,7 @@ switch($modalname) {
                                     <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                                         <!-- <th class="w-10px pe-2">#</th> -->
                                         <th class="min-w-125px">Name</th>
-                                        <th class="text-end min-w-100px" data-sortable="false">Actions</th>
+                                        <th class="text- min-w-100px" data-sortable="false">Actions</th>
                                     </tr>
                                     <!--end::Table row-->
                                 </thead>
@@ -1197,7 +1197,7 @@ break;
             <!--begin::Modal header-->
             <div class="modal-header" id="kt_modal_add_user_header">
                 <!--begin::Modal title-->
-                <h2 class="fw-bold">Add Taks</h2>
+                <h2 class="fw-bold">Add Task</h2>
                 <!--end::Modal title-->
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
@@ -1389,6 +1389,288 @@ if ($subcategory) {
 
 <?php
             break;
-        break;
+
+
+    case 'adminStaffAddLocation':
+        ?>
+<!--begin::Modal - Add Location-->
+<div class="modal fade commonmodal" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Modal header-->
+            <div class="modal-header" id="kt_modal_add_user_header">
+                <!--begin::Modal title-->
+                <h2 class="fw-bold">Add Location</h2>
+                <!--end::Modal title-->
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                    aria-label="Close">
+                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                    <span class="svg-icon svg-icon-1">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                                transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                fill="currentColor" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                </div>
+                <!--end::Close-->
+            </div>
+            <!--end::Modal header-->
+            <!--begin::Modal body-->
+            <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
+                <!--begin::Form-->
+                <form id="addTasklocation" class="form" action="#" data-parsley-validate>
+
+                    <!--begin::Scroll-->
+                    <div class="row d-flex scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll"
+                        data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
+                        data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                        data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+                        <input type="hidden" name="editid"
+                            value="<?=(isset($id)) ? $id : ''?>">
+                        <input type="hidden" name="editauth" value="<?=(isset($auth)) ? $auth : ''?>">
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7 col-md-6">
+													<!--begin::Label-->
+													<label class="required fw-semibold fs-6 mb-2">Location</label>
+													<!--end::Label-->
+													<!--begin::Input-->
+													<select data-parsley-errors-container="#location-errors" required name="staff_location" id="staff_location" data-control="select2" data-placeholder="location" data-hide-search="false" class="form-select form-select-solid fw-bold">
+														<option></option>
+														<?php
+														if ($location) {
+
+															foreach ($location as $key => $cat) {
+
+														?>
+																<option value="<?= strtolower($cat->location_id) ?>">
+                                                              <?= ucfirst($cat->lo_name) ?>
+
+																</option>
+														<?php
+															}
+														}
+														?>
+
+													</select>
+													<!--end::Input-->
+													<div id="location-errors"></div>
+													<!--end::Input-->
+												</div>
+                      
+                       
+
+                        <!--end::Input group-->
+
+                        <div class="fv-row mb-7  col-md-6">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2">Location Start Date</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" required name="task_date" id="location_date"
+                                class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Location Start Date"
+                                value="" />
+                            <!--end::Input-->
+                        </div>
+
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+
+                        <div class="fv-row mb-7  col-md-6">
+                            <!--begin::Label-->
+                            <label class=" fw-semibold fs-6 mb-2">Location End Date</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" name="location_end_date" id="location_end_date"
+                                class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Location End Date"
+                                value="" />
+                            <!--end::Input-->
+                        </div>
+
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+
+                       
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                      
+                        <!--end::Input group-->
+
+                    </div>
+                    <!--end::Scroll-->
+                    <!--begin::Actions-->
+                    <div class="text-right pt-15">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="submitlocation">
+                            <span class="indicator-label">Submit</span>
+                            <span class="indicator-progress">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </button>
+                    </div>
+                    <!--end::Actions-->
+                </form>
+                <!--end::Form-->
+            </div>
+            <!--end::Modal body-->
+        </div>
+        <!--end::Modal content-->
+    </div>
+    <!--end::Modal dialog-->
+</div>
+<!--end::Modal - Add Location-->
+
+<?php
+            break;
+        
+
+ case 'EditLocation':
+        ?>
+<!--begin::Modal - Edit Location-->
+<div class="modal fade commonmodal" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Modal header-->
+            <div class="modal-header" id="kt_modal_add_user_header">
+                <!--begin::Modal title-->
+                <h2 class="fw-bold">Edit Location</h2>
+                <!--end::Modal title-->
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal"
+                    aria-label="Close">
+                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                    <span class="svg-icon svg-icon-1">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1"
+                                transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)"
+                                fill="currentColor" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                </div>
+                <!--end::Close-->
+            </div>
+            <!--end::Modal header-->
+            <!--begin::Modal body-->
+            <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">
+                <!--begin::Form-->
+                <form id="editTasklocation" class="form" action="#" data-parsley-validate>
+                    <input type='hidden' id='locationid' name='id' value= '<?=$stafflocation->stafflocation_id ?>' />
+
+                    <!--begin::Scroll-->
+                    <div class="row d-flex scroll-y me-n7 pe-7" id="kt_modal_add_user_scroll"
+                        data-kt-scroll="true" data-kt-scroll-activate="{default: false, lg: true}"
+                        data-kt-scroll-max-height="auto" data-kt-scroll-dependencies="#kt_modal_add_user_header"
+                        data-kt-scroll-wrappers="#kt_modal_add_user_scroll" data-kt-scroll-offset="300px">
+                        
+
+                        <!--begin::Input group-->
+                        <div class="fv-row mb-7 col-md-6">
+													<!--begin::Label-->
+													<label class="required fw-semibold fs-6 mb-2">Location</label>
+													<!--end::Label-->
+													<!--begin::Input-->
+													<select data-parsley-errors-container="#location-errors" required name="sl_location_type" id="staff_location" data-control="select2" data-placeholder="location" data-hide-search="false" class="form-select form-select-solid fw-bold">
+														<option></option>
+														<?php
+														if ($location) {
+
+                                                          
+															foreach ($location as $key => $cat) {
+
+														?>
+																<option value="<?= strtolower($cat->location_id) ?>"<?=($stafflocation->sl_location_type==$cat->location_id)?'selected':''?>>
+																	<?= ucfirst($cat->lo_name) ?>
+
+																</option>
+														<?php
+															}
+														}
+														?>
+
+													</select>
+													<!--end::Input-->
+													<div id="location-errors"></div>
+													<!--end::Input-->
+												</div>
+                      
+                       
+
+                        <!--end::Input group-->
+
+                        <div class="fv-row mb-7  col-md-6">
+                            <!--begin::Label-->
+                            <label class="required fw-semibold fs-6 mb-2"> Location Start Date</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" required name="start_date_location" id="location_date"
+                                class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Location Start Date"
+                                value="<?=date('d-m-Y', strtotime($stafflocation->sl_start_date)); ?>" />
+                            <!--end::Input-->
+                        </div>
+
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+
+                        <div class="fv-row mb-7  col-md-6">
+                            <!--begin::Label-->
+                            <label class=" fw-semibold fs-6 mb-2"> Location End Date</label>
+                            <!--end::Label-->
+                            <!--begin::Input-->
+                            <input type="text" name="location_end_date" id="location_end_date"
+                                class="form-control form-control-solid mb-3 mb-lg-0" placeholder="Location End Date"
+                                value="<?=date('d-m-Y', strtotime($stafflocation->sl_end_date)); ?>" />
+                            <!--end::Input-->
+                        </div>
+
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+
+                       
+                        <!--end::Input group-->
+
+                        <!--begin::Input group-->
+                      
+                        <!--end::Input group-->
+
+                    </div>
+                    <!--end::Scroll-->
+                    <!--begin::Actions-->
+                    <div class="text-right pt-15">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="edit_location"  data-locationid="<?=(isset($stafflocation->stafflocation_id)) ? $stafflocation->stafflocation_id : ''?>">
+                            <span class="indicator-label">Submit</span>
+                            <span class="indicator-progress">Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span></span>
+                        </button>
+                    </div>
+                    <!--end::Actions-->
+                </form>
+                <!--end::Form-->
+            </div>
+            <!--end::Modal body-->
+        </div>
+        <!--end::Modal content-->
+    </div>
+    <!--end::Modal dialog-->
+</div>
+<!--end::Modal - edit Location-->
+
+<?php
+            break;
+        
 }
 ?>

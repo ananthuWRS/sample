@@ -14,6 +14,26 @@ class Admin extends MY_Controller
 	public function index($business = "")
 	{
 		$this->data['title']    = "Admin dashboard";
+		$this->data['vendorcss']        = array('custom/datatables/datatables.bundle.css');
+		$this->data['vendorjs']        = array('custom/datatables/datatables.bundle.js', 'custom/parsleyjs/parsley.min.js');
+		$this->data['commonjs']        = array('custom/scripts/report.js');
+		$this->data['scriptfunctions'] = array('adminreport();');
+		$this->load->model('staff/Tasks', 'task');
+		$this->load->model('admin/Departments', 'departments');
+		$this->load->model('admin/Designation', 'designation');
+        $this->load->model('admin/Departments', 'department');
+        $this->load->model('admin/Campus', 'campus');
+        $this->load->model('admin/Usertype', 'usertype');
+		
+       $this->data['department']  =  $this->department->get_many_by(array('dp_status' => '0'));
+       $this->data['school']     =  $this->campus->get_many_by(array('cp_status' => '0'));
+       $usertype_id = array('2', '3');
+       $usertype_status = array('0');
+       $this->data['usertype'] = $this->usertype->getusertype($usertype_status, $usertype_id);
+       $this->data['designation'] = $this->designation->get_many_by(array('dg_status' => '0'));
+		$this->data['totaltask'] = $this->task->count_all();
+		$this->data['totalstaff'] = $this->usersigin->count_all();
+		$this->data['total_departments'] = $this->departments->count_all();
 		$this->load->template('dashboard', $this->data, false);
 	}
 
@@ -41,7 +61,7 @@ class Admin extends MY_Controller
 			$row[] = $no;
 			$row[] = ucfirst(strtolower($item->tc_name));
 			$row[] = ($item->tc_status == "0") ? 'Active' : 'In-Active';
-			// $row[] = date('d-m-Y H:i a', strtotime($item->tc_addedon));
+			// $row[] = date('d-m-Y H:i loc', strtotime($item->tc_addedon));
 			$statusText = ($item->tc_status == "0") ? array('Delete', 'btn btn-delete btn-sm', 'fa-times-circle') : array('Enable', 'btn btn-light-success btn-sm', 'fa-check');
 
 			$row[] = '
@@ -172,6 +192,7 @@ class Admin extends MY_Controller
 	public function categoryEdit()
 	{
 		$this->load->model('admin/Task_category', 'category');
+		$this->data['categoryedit'] = 'Edit Category';
 		$editid = $this->input->post('editid', true);
 		$this->data['editdata'] = $this->category->get_by(array('task_categoryid' => $editid));
 		$category = $this->input->post('pagename');
@@ -727,7 +748,7 @@ class Admin extends MY_Controller
 				$deleted = $this->campus->update_status_by(array('campus_id' => $item), array('cp_status' => $status));
 
 				if ($deleted) {
-					$this->session->set_flashdata('successmessage', 'Campus ' . $statusText . ' successfully.');
+					$this->session->set_flashdata('successmessage', 'School ' . $statusText . ' successfully.');
 					echo "true";
 				} else {
 					$this->session->set_flashdata('errormessage', 'Error occurred ,Please try again.');
@@ -1144,6 +1165,7 @@ class Admin extends MY_Controller
         $this->load->model('staff/Tasks', 'task');
         $this->load->model('staff/Task_staff', 'taskstaff');
         $this->load->model('staff/Rating', 'rating');
+		$this->load->model('admin/Stafflocation', 'stafflocation');
        
         
         if ($this->validchecksumcheck($id, $auth)) {
@@ -1152,13 +1174,15 @@ class Admin extends MY_Controller
             $this->data['commonjs']        = array('custom/scripts/customscriptfiles.js');
             //$this->data['scriptfunctions'] = array('task_rating('.$id.');');
             $this->data['taskList'] = $this->task->getstaffalltasks($id);
+			$this->data['locationlist'] = $this->stafflocation->get_all_location_submit($id);
+
             $this->data['solved'] = $this->taskstaff->count_by(array('tsa_staffid'=>$id,'tsa_status'=>'0','tsa_completed_status'=>'2'));
             $this->data['pending'] = $this->taskstaff->count_by(array('tsa_staffid'=>$id,'tsa_status'=>'0','tsa_completed_status !='=>'2'));
             $userdata=$this->usersigin->getstaffbycondition(array('c.authenticationid'=>$id));
             $this->data['userdata']=array_shift($userdata);
             $rid=$this->session->userdata('authenticationid');
            // $this->data['ratingcnt']= $this->rating->getstaffrating_count($id,$rid);
-            $this->data['scriptfunctions'] = array('viewstaff();','task_rating('.$id.');');
+            $this->data['scriptfunctions'] = array('viewstaff();','task_rating('.$id.');','addlocation();');
             $this->data['title']           = "View Staff";
             $this->data['id']           =  $id;
             $this->data['auth']           =  $auth;
@@ -1738,7 +1762,7 @@ class Admin extends MY_Controller
 							$assignStaffArray = [];
 							foreach ($teamMembers as $member) {
 								$assignStaffArray[] = array(
-									'tsa_staffid' => $member,
+									'tsa_staffid' => $member->tm_staffid,
 									'tsa_taskid' => $taksInserted,
 									'tsa_completed_status' => $taskCompletedStatus,
 									'tsa_completed_percentage' => '0',
@@ -1807,7 +1831,7 @@ class Admin extends MY_Controller
 								$assignStaffArray = [];
 								foreach ($teamMembers as $member) {
 									$assignStaffArray[] = array(
-										'tsa_staffid' => $member,
+										'tsa_staffid' => $member->tm_staffid,
 										'tsa_taskid' => $editid,
 										'tsa_completed_status' => $taskCompletedStatus,
 										'tsa_completed_percentage' => '0',
@@ -2037,6 +2061,108 @@ class Admin extends MY_Controller
 			}
 		}
 	}
+	public function adminStaffProfileAddLocation()
+	{
+		$this->load->model('admin/Location', 'location');
+		$this->load->model('admin/Stafflocation', 'stafflocation');
+		$id = $this->input->post('staffid', true);
+
+		$this->data['location']=  $this->location->get_many_by(array('lo_status' => '0'));	
+
+		$this->data['stafflocation'] = $this->stafflocation->getlatest_staff_location($id);
+
+		
+			$pagename = $this->input->post('pagename');
+			if ($pagename) {
+				$this->data['modalname'] = $pagename;
+				$this->data['id'] = $id;
+				$this->data['auth'] = $this->loggeduserid;
+				
+				echo $this->load->view('commonmodal', $this->data, true);
+			}
+		
+	}
+	public function location_submit()
+	{
+		$this->load->model('admin/Stafflocation', 'stafflocation');
+		$id = $this->input->post('editid', true);
+		$authid = $this->input->post('editauth', true);
+		$location_type=$this->input->post('staff_location', true);
+		$location_start_date=$this->input->post('task_date');
+		$location_end_date=$this->input->post('location_end_date');
+
+		$location_submit=array(
+			                'sl_staff_id' =>$id,
+							'sl_location_type' => $location_type,
+							'sl_addedby' => $authid,
+							'sl_addedon' => date('Y-m-d H:i:s'),
+							'sl_status' => '0',
+							'sl_start_date' => date('Y-m-d', strtotime($location_start_date)),
+							'sl_end_date' => date('Y-m-d', strtotime($location_end_date))
+		);
+//print_r($location_submit);
+		//$this->load->model('admin/Stafflocation', 'location');
+		$locationsubmit=$this->stafflocation->location_sumbit($location_submit);
+		if ($locationsubmit) {
+			//$this->session->set_flashdata('successmessage', 'location Added successfully.');
+			$result = array('status' => 'Yes', 'Message' => 'Changed Added successfully');
+		 } else {
+			$this->session->set_flashdata('errormessage', 'Changes not found.');
+			$result = array('status' => 'No', 'Message' => 'Changes not found.');
+		 }
+		 echo json_encode($result);
+	}
+
+	public function Edit_location()
+	{
+		$this->load->model('admin/Location', 'location');
+		 $this->load->model('admin/StaffLocation', 'stafflocation');
+		 $editid = $this->input->post('editid', true);
+		 $id = $this->input->post('staffid', true);
+		 $this->data['location']=  $this->location->get_many_by(array('lo_status' => '0'));
+
+		 $this->data['editdata'] = $editid;
+
+		 $this->data['stafflocation'] = $this->stafflocation->get_staff_location($editid);
+		 $category = $this->input->post('pagename');
+		 if ($category) {
+			 $this->data['modalname'] = $category;
+			 echo $this->load->view('commonmodal', $this->data, true);
+		 
+		
+	}
+}
+public function locationedit_submit()
+   {
+    $location=$this->input->post('id', true);//rating type
+   //  $staff_id=$this->input->post('editid', true); 
+   // $reporting_staff_id=$this->session->userdata('authenticationid');
+	$sl_location_type = $this->input->post('sl_location_type',true);
+    $start_date_location =$this->input->post('start_date_location', true);
+    //print_r($date_rate);
+    $end_date_location=$this->input->post('location_end_date', true);
+
+$location_submit=array(
+  
+    'sl_start_date'=>date('Y-m-d', strtotime($start_date_location)),
+    'sl_end_date'=>date('Y-m-d', strtotime($end_date_location)),
+	'sl_location_type'=> $sl_location_type,
+);
+
+$this->load->model('admin/StaffLocation', 'location');
+$locationsubmit=$this->location->edit_location_sumbit($location_submit,$location);
+if ($locationsubmit) {
+    $this->session->set_flashdata('successmessage', 'Location  changed successfully.');
+    $result = array('status' => 'Yes', 'Message' => 'Changed Added successfully');
+} else {
+    $this->session->set_flashdata('errormessage', 'Changes not found.');
+    $result = array('status' => 'No', 'Message' => 'Changes not found.');
+}
+echo json_encode($result);
+
+   }
+
+	
 
 
 	public function profileTaskSubmitProcess()
@@ -2132,13 +2258,13 @@ class Admin extends MY_Controller
 			$this->data['auth']           =  $auth;
 			$this->data['department']           =  $this->department->get_many_by(array('dp_status' => '0'));
 			$this->data['school']           =  $this->campus->get_many_by(array('cp_status' => '0'));
-			$this->data['location']           =  $this->location->get_many_by(array('lo_status' => '0'));
+			$this->data['location']           =  $this->location->get_many_by(array('lo_status' => '0'));	
 			$usertype_id = array('2', '3');
 			$usertype_status = array('0');
 			$this->data['usertype'] = $this->usertype->getusertype($usertype_status, $usertype_id);
 			$this->data['designation'] = $this->designation->get_many_by(array('dg_status' => '0'));
-
-			$this->data['stafflocation'] = $this->stafflocation->get_many_by(array('sl_status' => '0', 'sl_staff_id' => $id));
+            //$this->data['stafflocation'] = $this->stafflocation->get_many_by(array('sl_status' => '0', 'sl_staff_id' => $id));
+			$this->data['stafflocation'] = $this->stafflocation->getlatest_staff_location($id);
 			$this->load->template('users/editstaff', $this->data, false);
 		} else {
 			$this->session->set_flashdata('errormessage', 'Invalid request');
@@ -2537,5 +2663,158 @@ class Admin extends MY_Controller
 			$this->session->set_flashdata('errormessage', 'Error occurred ,Please try again.');
 			echo "false";
 		}
+	}
+	 public function getlogindata(){
+
+
+ $data = array();
+
+
+  foreach($_GET['ddd'] as $dates)
+    {
+        
+
+        $day = date('d',strtotime($dates));
+        $month = date('m',strtotime($dates));
+        $year = date('Y',strtotime($dates));
+
+$sql = $this->db->query("SELECT COUNT(DISTINCT 	ut_staff_id ) AS joins  from ah_usertime where MONTH(ut_login_time) = $month AND DAY(ut_login_time) = $day  AND  YEAR(ut_login_time) = $year ");
+        $userlogin = $sql->result();
+         $row_array['date'] = $month.'-'.$day;
+            $row_array['value'] = $userlogin[0]->joins;
+      array_push($data, $row_array);
+        
+
+    }
+
+   echo json_encode($data);
+
+
+
+}
+
+public function getusersdata(){
+
+     
+	 $this->load->model('staff/Tasks', 'task');
+		$this->load->model('admin/Departments', 'departments');
+		$this->data['totaltask'] = $this->task->count_all();
+	 
+      $pending = $this->task->count_all_task('1');
+      $completed = $this->task->count_all_task('2');
+      $rejected = $this->task->count_all_task('3');
+      //print_r($expiredusers);exit();
+
+
+echo json_encode(array('result1'=>$pending,'result2'=>$completed,'result3'=>$rejected));
+}
+
+public function ajaxreporttasklist()
+	{
+		$this->load->model('staff/Tasks', 'task');
+		$list = $this->task->get_datatables();
+		$tabledata = array();
+		$no = $this->input->post('start', true);
+		$vt = 1;
+		foreach ($list as $item) {
+			$authid = $this->checksumgen($item->taskid);
+			$no++;
+			$row = array();
+			$row[] = '<div class="d-flex align-items-center"><div class="d-flex justify-content-start flex-column">'.ucfirst(strtolower($item->task_title)).'</div></div>';
+			
+			//$row[] = '<span class="fs-6">'.ucfirst(strtolower($item->tc_name)) .'</span>';
+			//$row[] = ;
+			switch ($item->task_status) {
+				case '0':
+					$status = "Active";
+					break;
+				case '1':
+					$status = "Pending";
+					break;
+				case '2':
+					$status = "Completed";
+					break;
+			}
+			// $row[] = $status;
+			 switch($item->task_priority) {
+                case 'low':
+                    $priority= '<span class="badge badge-light-success fs-base">'.ucfirst(strtolower($item->task_priority)).'</span>';
+                    break;
+                case 'normal':
+                    $priority= '<span class="badge badge-light-success fs-base">'.ucfirst(strtolower($item->task_priority)).'</span>';
+                    break;
+                case 'urgent':
+                    $priority= '<span class="badge badge-light-danger fs-base">'.ucfirst(strtolower($item->task_priority)).'</span>';
+                    break;
+            }
+            $row[] = $priority;
+			//  $row[] = ucfirst(strtolower(word_limiter($item->task_details, 100)));
+			$row[] = $status;
+			 if ($this->session->userdata('usertype')==1) {
+			$row[] = ucfirst(strtolower($item->task_completed_percentage));
+			 }else{
+				 $row[] = ucfirst(strtolower($item->tsa_completed_percentage));
+			 }
+			$row[] = '<a href="' . base_url() . 'staff/viewtask/' . $item->taskid . '/' . $authid . '" class="btn btn-view  btn-sm mt-2 " "=""><i class="fa fa-eye"></i> View</a>';
+
+			$tabledata[] = $row;
+			$vt++;
+			/* ================================ */
+		}
+
+		$output = array(
+			"draw" => $this->input->post('draw', true),
+			"recordsTotal" => $this->task->count_all(),
+			"recordsFiltered" => $this->task->count_filtered(),
+			"data" => $tabledata,
+		);
+
+		echo json_encode($output);
+	}
+	
+	public function ajax_report_stafflist()
+	{
+		$this->load->model('admin/Staff_reporting_conn', 'reporting');
+		$list = $this->usersigin->get_datatables();
+		//print_r($list);exit();
+		$tabledata = array();
+		$no = $this->input->post('start', true);
+		$vt = 1;
+		foreach ($list as $item) {
+			$authid = $this->checksumgen($item->authenticationid);
+			$checkReporting = $this->reporting->get_by(array('rp_staffid' => $item->authenticationid, 'rp_status' => '0'));
+			$no++;
+			$row = array();
+			//$row[] = $no;
+			$row[] = ucfirst(strtolower($item->au_emp_number));
+			$row[] = ucfirst(strtolower($item->au_title) . ' ' .  ucfirst($item->au_crickf));
+			$row[] = ucfirst(strtolower($item->designation_name));
+			$row[] = ucfirst(strtolower($item->rating_option_title));
+			$row[] = '<a href="' . base_url() . 'admin/viewstaff/' . $item->authenticationid . '/' . $authid . '" class="btn btn-view  btn-sm mt-2 " "=""><i class="fa fa-eye"></i> View</a>';
+
+			
+			$tabledata[] = $row;
+			$vt++;
+			/* ================================ */
+		}
+
+		$output = array(
+			"draw" => $this->input->post('draw', true),
+			"recordsTotal" => $this->usersigin->count_all(),
+			"recordsFiltered" => $this->usersigin->count_filtered(),
+			"data" => $tabledata,
+		);
+
+        echo json_encode($output);
+    }
+	
+	function loginusers(){
+		
+		$time = $this->input->post('date', true);
+		
+		$userlogin = $this->usersigin->login_users($time);
+		
+		 echo json_encode($userlogin);
+		
 	}
 }

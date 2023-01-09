@@ -77,9 +77,8 @@
                                                 <div>
                                                     <div class="d-flex space-bw purple_bdr_btm align_center pb-3" >
                                                     <div class="d_line1 d-flex ">
-                                                        <p><?=(isset($taskDetails)) ? $taskDetails->tsa_completed_percentage : ''?>%</p><p>|</p><p><?=(isset($taskDetails)) ? $taskDetails->task_title : ''?></p>
-                                                    </div>
-                                                   <?php 
+													
+													 <?php 
                                                    switch($taskDetails->task_priority) {
                                                     case 'low':
                                                         $priority= '<span class="badge badge-light-success fs-base">'.ucfirst(strtolower($taskDetails->task_priority)).'</span>';
@@ -92,7 +91,11 @@
                                                         break;
                                                   } 
                                                   ?>
-                                                  <div class="d_line1 d-flex"><p><?=$timeSpent?></p><p>|</p><p class="m-0"><?= $priority?></p></div>
+													
+                                                        <p><?=(isset($taskDetails)) ? $taskDetails->tsa_completed_percentage : ''?>%</p><p>|</p><p><?=(isset($taskDetails)) ? $taskDetails->task_title : ''?> <p class="m-0"><?= $priority?></p></p>
+                                                    </div>
+                                                  
+                                                  <div class="d_line1 d-flex"><p><?=$timeSpent?></p></div>
                                                   
                                                    </div>
                                                     <div class="d-flex space-bw  align_center" >
@@ -162,15 +165,15 @@
                                                                 aria-controls="kt_table_users" rowspan="1" colspan="1"
                                                                 aria-label="Task Name: activate to sort column ascending"
                                                                 style="width: 125.25px;">Date</th>
-                                                            <th class="min-w-125px sorting" tabindex="0"
-                                                                aria-controls="kt_table_users" rowspan="1" colspan="1"
-                                                                aria-label="Category: activate to sort column ascending"
-                                                                style="width: 125.25px;">Status%</th>
-                                                                <th class="min-w-125px sorting" tabindex="0"
+															 <th class="min-w-125px sorting" tabindex="0"
                                                                 aria-controls="kt_table_users" rowspan="1" colspan="1"
                                                                 aria-label="Category: activate to sort column ascending"
                                                                 style="width: 125.25px;">Time</th>
                                                             <th class="min-w-125px sorting" tabindex="0"
+                                                                aria-controls="kt_table_users" rowspan="1" colspan="1"
+                                                                aria-label="Category: activate to sort column ascending"
+                                                                style="width: 125.25px;">Status%</th>
+															<th class="min-w-125px sorting" tabindex="0"
                                                                 aria-controls="kt_table_users" rowspan="1" colspan="1"
                                                                 aria-label="Sub Category: activate to sort column ascending"
                                                                 style="width: 125.25px;">Remarks</th>
@@ -196,8 +199,8 @@ if ($taskStatusDetails) {
                                                             <td><?=$i?></td>
                                                             <td><?=date('d-m-Y',strtotime($details->td_execution_date))?>
                                                             </td>
-                                                            <td><?=$details->td_completion_percentage?></td>
-                                                            <td><?=(($details->td_hours!='')?$details->td_hours:'0').' Hrs|'.(($details->td_minutes!='')?$details->td_minutes:'0').' Minutes'?></td>
+															<td><?=(($details->td_hours!='')?$details->td_hours:'0').' Hrs : '.(($details->td_minutes!='')?$details->td_minutes:'0').' Mins'?></td>
+                                                            <td><?=$details->td_completion_percentage?>%</td>
                                                             <td><?=$details->td_remarks?></td>
                                                             <td>
                                                                 <?php if($details->td_approved !='1'){ ?>

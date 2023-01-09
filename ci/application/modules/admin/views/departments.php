@@ -14,7 +14,7 @@
                 <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
                     <!--begin::Item-->
                     <li class="breadcrumb-item text-muted">
-                        <a href="<?=base_url()?>" class="text-muted text-hover-primary">Home</a>
+                        <a href="<?=base_url()?>/admin" class="text-muted text-hover-primary">Home</a>
                     </li>
                     <!--end::Item-->
                     <!--begin::Item-->
@@ -23,7 +23,7 @@
                     </li>
                     <!--end::Item-->
                     <!--begin::Item-->
-                    <li class="breadcrumb-item text-muted">Task Management</li>
+                    <li class="breadcrumb-item text-muted">Manage Settings</li>
                     <!--end::Item-->
                     <!--begin::Item-->
                     <li class="breadcrumb-item">
@@ -119,10 +119,10 @@
                             <!--begin::Table row-->
                             <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                                 <th class="w-10px pe-2">#</th>
-                                <th class="min-w-125px">Departments</th>
-                                <th class="min-w-125px">Status</th>
+                                <th class="text-center min-w-125px">Departments</th>
+                                <th class="text-center min-w-125px">Status</th>
                                 <!-- <th class="min-w-125px">Added On</th>                                -->
-                                <th class="text-center min-w-100px" data-sortable="false">Actions</th>
+                                <th class="text-center min-w-50px" data-sortable="false">Actions</th>
                             </tr>
                             <!--end::Table row-->
                         </thead>

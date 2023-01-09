@@ -21,6 +21,7 @@ class Welcome extends MY_Controller
 
     public function signinauthentication()
     {
+		$this->load->model('welcome/User_time', 'usertime');
         $username = $this->security->xss_clean($this->input->post('username'));
         $password = $this->security->xss_clean($this->input->post('password'));
 
@@ -37,7 +38,10 @@ class Welcome extends MY_Controller
                         if ($success->authenticationid > 0) {
                             $session_id        = $success->authenticationid;
                             $userrole          = $success->au_usertype;
-
+							$usertimedata = array( 
+								'ut_staff_id'  =>$success->authenticationid, 	 
+								'ut_status' => '0'
+							 );  
                             if ($userrole == roles::admin) {
                                 $sess_data = array(
                                     'authenticationid' => $success->authenticationid,
@@ -47,10 +51,12 @@ class Welcome extends MY_Controller
                                     'contactnumber'    => $success->au_crickpn,
                                     'usertypename'     => 'Admin',
                                 );
+								$login_time = date('Y-m-d H:i:s');
+								$usertimedata = array_merge( $usertimedata,['ut_login_time'=>$login_time]) ;
+								$this->session->set_userdata($usertimedata);
+								$this->usertime->insert($usertimedata,true); 
                                 $this->session->set_userdata($sess_data);
                                 $this->session->set_flashdata('successmessage', 'User authentication success');
-                                $login_tym = date('Y-m-d H:i:s'); 
-                                
                                 $result = array('status' => 'Yes', 'Message' => 'User authentication success', 'url' => 'admin');
                             } elseif ($userrole == roles::teachingstaff) {
                                 $sess_data = array(
@@ -62,6 +68,10 @@ class Welcome extends MY_Controller
                                         'profilesalt'      => $success->au_salt,
                                         'usertypename'     => 'Teaching',
                                     );
+									$login_time = date('Y-m-d H:i:s');
+									$usertimedata = array_merge( $usertimedata,['ut_login_time'=>$login_time]) ;
+									$this->session->set_userdata($usertimedata);
+									$this->usertime->insert($usertimedata,true); 
 
                                  $redirecturl = 'staff';
 
@@ -79,6 +89,11 @@ class Welcome extends MY_Controller
                                     'usertypename'     => 'Non Teching',
                                 );
 
+								$login_time = date('Y-m-d H:i:s');
+								$usertimedata = array_merge( $usertimedata,['ut_login_time'=>$login_time]) ;
+								$this->session->set_userdata($usertimedata);
+								$this->usertime->insert($usertimedata,true); 
+								
                                 $redirecturl = 'staff';
 
                                 $this->session->set_userdata($sess_data);
@@ -433,15 +448,55 @@ class Welcome extends MY_Controller
         }
         echo json_encode($result);
     }
-
-    public function profile()
+     public function profile($id="")
     {
-        $this->data['vendorjs']        = array('custom/parsleyjs/parsley.min.js');
-        $this->data['commonjs']        = array('custom/scripts/customscriptfiles.js');
-        // $this->data['scriptfunctions'] = array('taskSubcategory();');
-        $this->data['title']           = "Profile";
-        $this->data['profileactive']           = "1";
-        $this->load->template('profile', $this->data, false);
+        
+        if($this->session->userdata('usertype')==1){
+            $this->data['vendorjs']        = array('custom/parsleyjs/parsley.min.js');
+            $this->data['commonjs']        = array('custom/scripts/customscriptfiles.js');
+           
+            // $this->data['scriptfunctions'] = array('taskSubcategory();');
+            $this->data['title']           = "Profile";
+            $this->data['profileactive']           = "1";
+            
+            $this->load->template('admin_profile', $this->data, false);
+
+        }else{
+        $this->load->model('staff/Tasks', 'task');
+        $this->load->model('staff/Task_staff', 'taskstaff');
+        $this->load->model('staff/Rating', 'rating');
+		$this->load->model('admin/Stafflocation', 'stafflocation');
+        $auth = $this->checksumgen($id);
+        
+        if ($this->validchecksumcheck($id, $auth)) {
+            $this->data['vendorcss']        = array('custom/datatables/datatables.bundle.css');
+            $this->data['vendorjs']        = array('custom/datatables/datatables.bundle.js','custom/parsleyjs/parsley.min.js');
+            $this->data['commonjs']        = array('custom/scripts/customscriptfiles.js');
+            //$this->data['scriptfunctions'] = array('task_rating('.$id.');');
+            $this->data['taskList'] = $this->task->getstaffalltasks($id);
+			$this->data['locationlist'] = $this->stafflocation->get_all_location_submit($id);
+
+            $this->data['solved'] = $this->taskstaff->count_by(array('tsa_staffid'=>$id,'tsa_status'=>'0','tsa_completed_status'=>'2'));
+            $this->data['pending'] = $this->taskstaff->count_by(array('tsa_staffid'=>$id,'tsa_status'=>'0','tsa_completed_status !='=>'2'));
+            $userdata=$this->usersigin->getstaffbycondition(array('c.authenticationid'=>$id));
+            $this->data['userdata']=array_shift($userdata);
+            $rid=$this->session->userdata('authenticationid');
+           // $this->data['ratingcnt']= $this->rating->getstaffrating_count($id,$rid);
+            $this->data['scriptfunctions'] = array('viewstaff();','task_rating('.$id.');','addlocation();');
+            $this->data['title']           = "View Staff";
+            $this->data['id']           =  $id;
+            $this->data['auth']           =  $auth;
+            $this->data['controller']     =  $this;
+
+                $this->load->template('profile', $this->data, false);  
+        } 
+            
+        /*else { 
+            $this->session->set_flashdata('errormessage', 'Invalid request');
+            redirect('admin/staff');
+        }*/
+    }
+      
     }
 
     public function settings()
@@ -494,4 +549,8 @@ class Welcome extends MY_Controller
 
         echo json_encode($result);
     }
+	public function add_pause_time(){
+		$pause_time_array=array();
+		$resume_time_aray=array();
+	}
 }

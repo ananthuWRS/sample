@@ -300,9 +300,9 @@
 												</div>
 
 												<!--begin::Input group-->
-												<div class="fv-row mb-7 col-md-6">
+												<div class="fv-row mb-7 col-md-4">
 													<!--begin::Label-->
-													<label class="required fw-semibold fs-6 mb-2">Work Location</label>
+													<label class="required fw-semibold fs-6 mb-2">Location</label>
 													<!--end::Label-->
 													<!--begin::Input-->
 													<select data-parsley-errors-container="#location-errors" required name="staff_location" id="staff_location" data-control="select2" data-placeholder="Select location" data-hide-search="false" class="form-select form-select-solid fw-bold">
@@ -327,9 +327,9 @@
 													<div id="location-errors"></div>
 													<!--end::Input-->
 												</div>
-												<div class="fv-row mb-7  col-md-6">
+												<div class="fv-row mb-7  col-md-4">
                                                     <!--begin::Label-->
-                                                    <label class="required fw-semibold fs-6 mb-2">Work Start Date</label>
+                                                    <label class="required fw-semibold fs-6 mb-2">Start Date</label>
                                                     <!--end::Label-->
                                                     <!--begin::Input-->
                                                     <input type="text" required name="work_date" id="work_date"
@@ -339,9 +339,9 @@
                                                 </div>
 												 <!--begin::Input group-->
 
-												 <div class="fv-row mb-7  col-md-6">
+												 <div class="fv-row mb-7  col-md-4">
                                                     <!--begin::Label-->
-                                                    <label class=" fw-semibold fs-6 mb-2">Work End Date</label>
+                                                    <label class=" fw-semibold fs-6 mb-2">End Date</label>
                                                     <!--end::Label-->
                                                     <!--begin::Input-->
                                                     <input type="text" required name="work_end_date" id="work_end_date"
